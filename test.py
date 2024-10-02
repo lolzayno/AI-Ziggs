@@ -4,7 +4,7 @@ import requests
 import pytz
 import datetime
 from sqlalchemy import create_engine, text
-
+from datetime import datetime
 def establish_connection():
     engine = create_engine(f'mysql+mysqlconnector://{get_json("user")}:{get_json("host_pw")}@{get_json("host_host")}/{get_json("database")}')
     try:
@@ -94,21 +94,87 @@ def update_players(player_list, engine, region, api_key, rank):
         ign, tag = get_ign(puuid, api_key, region)
         insert_player(engine, player['summonerId'], ign, tag, region, rank, player['leaguePoints'], player['wins'], player['losses'], datetime.now())
 
+#Updating and inserting player
 def insert_player(engine, summoner_id, summoner_name, summoner_tag, summoner_region, summoner_rank, summoner_lp, summoner_wins, summoner_losses, last_updated):
+    check_sql = """
+    SELECT COUNT(*) FROM highelo_player
+    WHERE summoner_id = :summoner_id
+    """
+    update_sql = """
+    UPDATE highelo_player
+    SET 
+        summoner_name = :summoner_name,
+        summoner_tag = :summoner_tag,
+        summoner_region = :summoner_region,
+        summoner_rank = :summoner_rank,
+        summoner_lp = :summoner_lp,
+        summoner_wins = :summoner_wins,
+        summoner_losses = :summoner_losses,
+        last_updated = :last_updated
+    WHERE summoner_id = :summoner_id
+    """
+    insert_sql = """
+    INSERT INTO highelo_player(summoner_id, summoner_name, summoner_tag, summoner_region, summoner_rank, summoner_lp, summoner_wins, summoner_losses, last_updated) VALUES (:summoner_id, :summoner_name, :summoner_tag, :summoner_region, :summoner_rank, :summoner_lp, :summoner_wins, :summoner_losses, :last_updated)
+    """
+    fetch_sql = """
+    SELECT * FROM highelo_player
+    WHERE summoner_id = :summoner_id
+    """
     with engine.connect() as connection:
-        connection.execute(text("INSERT INTO highelo_player(summoner_id, summoner_name, summoner_tag, summoner_region, summoner_rank, summoner_lp, summoner_wins, summoner_losses, last_updated) VALUES (:summoner_id, :summoner_name, :summoner_tag, :summoner_region, :summoner_rank, :summoner_lp, :summoner_wins, :summoner_losses, :last_updated)"), {"summoner_id": summoner_id, "summoner_name": summoner_name, "summoner_tag": summoner_tag, "summoner_region": summoner_region, "summoner_rank": summoner_rank, "summoner_lp": summoner_lp, "summoner_wins": summoner_wins, "summoner_losses": summoner_losses, "last_updated": last_updated})
-        result = connection.execute(text("""
-            SELECT * FROM highelo_player
-            WHERE summoner_id = :summoner_id
-            """), {"summoner_id": summoner_id})
-        row = result.fetchone()
-
-    return
+        transaction = connection.begin()
+        try:
+            result = connection.execute(text(check_sql), {
+                "summoner_id": summoner_id
+            })
+            count = result.scalar()
+            if count > 0:
+                connection.execute(text(update_sql), {
+                    "summoner_id": summoner_id,
+                    "summoner_name": summoner_name, 
+                    "summoner_tag": summoner_tag, 
+                    "summoner_region": summoner_region, 
+                    "summoner_rank": summoner_rank, 
+                    "summoner_lp": summoner_lp, 
+                    "summoner_wins": summoner_wins,
+                    "summoner_losses": summoner_losses, 
+                    "last_updated": last_updated
+                })
+            else:
+                connection.execute(text(insert_sql), {
+                    "summoner_id": summoner_id,
+                    "summoner_name": summoner_name, 
+                    "summoner_tag": summoner_tag, 
+                    "summoner_region": summoner_region, 
+                    "summoner_rank": summoner_rank, 
+                    "summoner_lp": summoner_lp, 
+                    "summoner_wins": summoner_wins, 
+                    "summoner_losses": summoner_losses, 
+                    "last_updated": last_updated
+                })
+            transaction.commit()
+            result = connection.execute(text(fetch_sql), {
+                "summoner_id": summoner_id
+            })
+            player = result.fetchone()
+            if player:
+                return player
+            else:
+                return None
+        except Exception as e:
+            transaction.rollback()
+            raise e
 if __name__ == '__main__':
     api_key = get_json("API_KEY") #Fetches api key
-    challenger = fetch_challenger('na1', api_key) #gets challenger players
-    grandmaster = fetch_grandmaster('na1', api_key) #gets grandmaster players
-    master = fetch_master('na1', api_key) #get master players
     engine = establish_connection() #establishes connection to database
-    update_players(grandmaster, engine) #Updates players in database
     region_list = ['BR1', 'EUW1', 'EUN1', 'JP1', 'KR', 'LA1', 'LA2', 'ME1', 'NA1', 'OC1', 'PH2', 'RU', 'SG2', 'TH2', 'TR1', 'TW2', 'VN2']
+    test_list = ['NA1']
+    rank_list = ['Challenger', 'Grandmaster', 'Master']
+    for region in test_list:
+        for rank in rank_list:
+            if rank == 'Challenger':
+                players = fetch_challenger(region, api_key)
+            elif rank == 'Grandmaster':
+                players = fetch_grandmaster(region, api_key)
+            else:
+                players = fetch_master(region, api_key)
+            update_players(players, engine, region, api_key, rank)
