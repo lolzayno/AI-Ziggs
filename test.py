@@ -5,11 +5,10 @@ import pytz
 import datetime
 from sqlalchemy import create_engine, text
 from datetime import datetime
+import time
+def fetch_rune(patch):
 
-def fetch_rune(rune_id):
-    patch_version = "14.19.1"
-
-    url = f"https://ddragon.leagueoflegends.com/cdn/{patch_version}/data/en_US/runesReforged.json"
+    url = f"https://ddragon.leagueoflegends.com/cdn/{patch}/data/en_US/runesReforged.json"
     
 
     response = requests.get(url)
@@ -28,26 +27,17 @@ def fetch_rune(rune_id):
             for rune in slot['runes']:
                 rune_mappings[rune['id']] = rune['name']
     
-    return rune_mappings[rune_id]
+    return rune_mappings
 
-def fetch_item(itemid):
-    if itemid == 0:
-        return "None"
-
-    patch_version = "14.19.1"
-
-
-    url = f"https://ddragon.leagueoflegends.com/cdn/{patch_version}/data/en_US/item.json"
-
-
+def fetch_item(patch):
+    url = f"https://ddragon.leagueoflegends.com/cdn/{patch}/data/en_US/item.json"
     response = requests.get(url)
     item_data = response.json()
 
-
     item_mapping = {int(item_id): item_info['name'] for item_id, item_info in item_data['data'].items()}
 
-
-    return item_mapping[itemid]
+    item_mapping[0] = 'None'
+    return item_mapping
 
 def establish_connection():
     engine = create_engine(f'mysql+mysqlconnector://{get_json("user")}:{get_json("host_pw")}@{get_json("host_host")}/{get_json("database")}')
@@ -82,7 +72,7 @@ def fetch_master(region, api_key):
     response = requests.get(master_link)
     return response.json()
 
-def fetch_matches(region, fetched_id, api_key):
+def fetch_matches(region, fetched_id, api_key, season_start):
     if region in ['BR1', 'LA1', 'LA2', 'NA1', 'OC1']:
         region = 'americas'
     elif region in ['JP1', 'KR']:
@@ -92,8 +82,6 @@ def fetch_matches(region, fetched_id, api_key):
     else:
         region = 'sea'
 
-    time_zone = pytz.timezone('America/Los_Angeles')
-    season_start = int(datetime(2024, 5, 15, 12, 0, 0, tzinfo=time_zone).timestamp())
     type_match = 'ranked'
     starting_index = 0
     matches_requested = 100
@@ -131,7 +119,6 @@ def get_ign(puuid, api_key, region):
     response = requests.get(get_url)
     data = response.json()
     return data['gameName'], data['tagLine']
-
 def update_players(player_list, engine, region, api_key, rank):
     for player in player_list['entries']:
         puuid = get_puuid(player['summonerId'], api_key, region)
@@ -147,8 +134,8 @@ def insert_player(engine, summoner_id, puuid, summoner_name, summoner_tag, summo
     update_sql = """
     UPDATE highelo_player
     SET 
-        summoner_name = :summoner_name,
         puuid = :puuid,
+        summoner_name = :summoner_name,
         summoner_tag = :summoner_tag,
         summoner_region = :summoner_region,
         summoner_rank = :summoner_rank,
@@ -159,7 +146,7 @@ def insert_player(engine, summoner_id, puuid, summoner_name, summoner_tag, summo
     WHERE summoner_id = :summoner_id
     """
     insert_sql = """
-    INSERT INTO highelo_player(summoner_id, summoner_name, puuid, summoner_tag, summoner_region, summoner_rank, summoner_lp, summoner_wins, summoner_losses, last_updated) VALUES (:summoner_id, :puuid, :summoner_name, :summoner_tag, :summoner_region, :summoner_rank, :summoner_lp, :summoner_wins, :summoner_losses, :last_updated)
+    INSERT INTO highelo_player(summoner_id, puuid, summoner_name, summoner_tag, summoner_region, summoner_rank, summoner_lp, summoner_wins, summoner_losses, last_updated) VALUES (:summoner_id, :puuid, :summoner_name, :summoner_tag, :summoner_region, :summoner_rank, :summoner_lp, :summoner_wins, :summoner_losses, :last_updated)
     """
     fetch_sql = """
     SELECT * FROM highelo_player
@@ -186,6 +173,8 @@ def insert_player(engine, summoner_id, puuid, summoner_name, summoner_tag, summo
                     "last_updated": last_updated
                 })
             else:
+                time_zone = pytz.timezone('America/Los_Angeles')
+                season_start = datetime(2024, 9, 25, 12, 0, 0, tzinfo=time_zone)
                 connection.execute(text(insert_sql), {
                     "summoner_id": summoner_id,
                     "puuid": puuid,
@@ -196,7 +185,7 @@ def insert_player(engine, summoner_id, puuid, summoner_name, summoner_tag, summo
                     "summoner_lp": summoner_lp, 
                     "summoner_wins": summoner_wins, 
                     "summoner_losses": summoner_losses, 
-                    "last_updated": last_updated
+                    "last_updated": season_start
                 })
             transaction.commit()
             result = connection.execute(text(fetch_sql), {
@@ -212,6 +201,14 @@ def insert_player(engine, summoner_id, puuid, summoner_name, summoner_tag, summo
             raise e
         
 def fetch_match_data(match_id, api_key, region):
+    if region in ['BR1', 'LA1', 'LA2', 'NA1', 'OC1']:
+        region = 'americas'
+    elif region in ['JP1', 'KR']:
+        region = 'asia'
+    elif region in ['EUW1', 'EUN1', 'RU', 'TR1', 'ME1']:
+        region = 'europe'
+    else:
+        region = 'sea'
     #api url request link to riot
     specific_match_api_url = f'https://{region}.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={api_key}'
 
@@ -222,6 +219,11 @@ def fetch_match_data(match_id, api_key, region):
     timestamp = timestamp / 1000.0
     timestamp = datetime.fromtimestamp(timestamp)
     timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+    gamedurtion = data['info']['gameDuration']
+    if data['info']['participants'][0]['win'] == True:
+        result = 'Blue'
+    else:
+        result = 'Red'
     for count, player in enumerate(data['info']['participants']):
         if player['individualPosition'] == 'TOP' and player['teamId'] == 100:
             bluetop_id = data['info']['participants'][count]['summonerId']
@@ -403,7 +405,7 @@ def fetch_match_data(match_id, api_key, region):
             redsup_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
             redsup_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
             redsup_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-    return (timestamp,
+    return (timestamp, gamedurtion, result,
         # Blue Top
         bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5,
         
@@ -435,7 +437,7 @@ def fetch_match_data(match_id, api_key, region):
         redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5
     )
 
-def insert_game(match_code, game_stamp, engine,
+def insert_game(match_code, game_stamp, engine, game_duration, outcome, patch,
         # Blue Top
         bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5,
         
@@ -476,11 +478,12 @@ def insert_game(match_code, game_stamp, engine,
             })
             row = result.fetchone()
             if row:
+                print("Duplicate")
                 return
             else:
                 connection.execute(text(""" 
                 INSERT INTO highelo_matches(
-                    match_code, game_stamp, 
+                    match_code, game_stamp, game_duration, result, patch,
                     bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, 
                     bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, 
                     redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, 
@@ -503,7 +506,7 @@ def insert_game(match_code, game_stamp, engine,
                     redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5
                 ) 
                 VALUES (
-                    :match_code, :game_stamp, 
+                    :match_code, :game_stamp, :game_duration, :result, :patch, 
                     :bluetop_id, :bluetop_champ, :bluetop_kills, :bluetop_deaths, :bluetop_assists, :bluetop_item0, :bluetop_item1, :bluetop_item2, :bluetop_item3, :bluetop_item4, :bluetop_item5, 
                     :bluetop_rune0, :bluetop_rune1, :bluetop_rune2, :bluetop_rune3, :bluetop_rune4, :bluetop_rune5, 
                     :redtop_id, :redtop_champ, :redtop_kills, :redtop_deaths, :redtop_assists, :redtop_item0, :redtop_item1, :redtop_item2, :redtop_item3, :redtop_item4, :redtop_item5, 
@@ -526,7 +529,7 @@ def insert_game(match_code, game_stamp, engine,
                     :redsup_rune0, :redsup_rune1, :redsup_rune2, :redsup_rune3, :redsup_rune4, :redsup_rune5
                 )
                 """), {
-                    "match_code": match_code, "game_stamp": game_stamp, 
+                    "match_code": match_code, "game_stamp": game_stamp, "game_duration": game_duration, "result": outcome, "patch": patch,
                     "bluetop_id": bluetop_id, "bluetop_champ": bluetop_champ, "bluetop_kills": bluetop_kills, "bluetop_deaths": bluetop_deaths, "bluetop_assists": bluetop_assists, "bluetop_item0": bluetop_item0, "bluetop_item1": bluetop_item1, 
                     "bluetop_item2": bluetop_item2, "bluetop_item3": bluetop_item3, "bluetop_item4": bluetop_item4, "bluetop_item5": bluetop_item5, 
                     "bluetop_rune0": bluetop_rune0, "bluetop_rune1": bluetop_rune1, "bluetop_rune2": bluetop_rune2, "bluetop_rune3": bluetop_rune3, 
@@ -569,83 +572,113 @@ def insert_game(match_code, game_stamp, engine,
                     "redsup_rune4": redsup_rune4, "redsup_rune5": redsup_rune5 
                 })
 
+def fetch_id():
+    check_sql = """
+    SELECT * FROM highelo_player
+    """
+    with engine.begin() as connection:
+            result = connection.execute(text(check_sql))
+            row = result.fetchall()
+            if row:
+                return row
+
+def fetch_patch():
+    patch_url = f'https://ddragon.leagueoflegends.com/api/versions.json'
+    response = requests.get(patch_url)
+    data = response.json()
+    return data[0]
 
 if __name__ == '__main__':
     api_key = get_json("API_KEY") #Fetches api key
     engine = establish_connection() #establishes connection to database
+    patch = fetch_patch()
     region_list = ['BR1', 'EUW1', 'EUN1', 'JP1', 'KR', 'LA1', 'LA2', 'ME1', 'NA1', 'OC1', 'PH2', 'RU', 'SG2', 'TH2', 'TR1', 'TW2', 'VN2']
     test_list = ['NA1']
     rank_list = ['Challenger', 'Grandmaster', 'Master']
-    # all_matches = fetch_matches('NA1', 'Z72DEIeLbxYPqzol2bkj89VTVVntUU6ZCf-O3_M_lsmgKPTXqVwKFHLQThp72-DxzxjLw9bOnG-Pnw', api_key)
-    # print(all_matches)
-    #print(fetch_match_data('NA1_5125169546', api_key, 'americas')['info']['participants'])
-    (time_stamp,
-        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5,
-        
-        # Blue JG
-        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5,
-        
-        # Blue Mid
-        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5,
-        
-        # Blue Bot
-        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5,
-        
-        # Blue Sup
-        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5,
-        
-        # Red Top
-        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5,
-        
-        # Red JG
-        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5,
-        
-        # Red Mid
-        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5,
-        
-        # Red Bot
-        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5,
-        
-        # Red Sup
-        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5
-    ) = fetch_match_data('NA1_5125169546', api_key, 'americas')
-    insert_game('NA1_5125169546', time_stamp, engine,
-        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, fetch_item(bluetop_item0), fetch_item(bluetop_item1), fetch_item(bluetop_item2), fetch_item(bluetop_item3), fetch_item(bluetop_item4), fetch_item(bluetop_item5), fetch_rune(bluetop_rune0), fetch_rune(bluetop_rune1), fetch_rune(bluetop_rune2), fetch_rune(bluetop_rune3), fetch_rune(bluetop_rune4), fetch_rune(bluetop_rune5),
-        
-        # Blue JG
-        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, fetch_item(bluejg_item0), fetch_item(bluejg_item1), fetch_item(bluejg_item2), fetch_item(bluejg_item3), fetch_item(bluejg_item4), fetch_item(bluejg_item5), fetch_rune(bluejg_rune0), fetch_rune(bluejg_rune1), fetch_rune(bluejg_rune2), fetch_rune(bluejg_rune3), fetch_rune(bluejg_rune4), fetch_rune(bluejg_rune5),
-        
-        # Blue Mid
-        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, fetch_item(bluemid_item0), fetch_item(bluemid_item1), fetch_item(bluemid_item2), fetch_item(bluemid_item3), fetch_item(bluemid_item4), fetch_item(bluemid_item5), fetch_rune(bluemid_rune0), fetch_rune(bluemid_rune1), fetch_rune(bluemid_rune2), fetch_rune(bluemid_rune3), fetch_rune(bluemid_rune4), fetch_rune(bluemid_rune5),
-        
-        # Blue Botfetch_item(
-        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, fetch_item(bluebot_item0), fetch_item(bluebot_item1), fetch_item(bluebot_item2), fetch_item(bluebot_item3), fetch_item(bluebot_item4), fetch_item(bluebot_item5), fetch_rune(bluebot_rune0), fetch_rune(bluebot_rune1), fetch_rune(bluebot_rune2), fetch_rune(bluebot_rune3), fetch_rune(bluebot_rune4), fetch_rune(bluebot_rune5),
-        
-        # Blue Sup
-        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, fetch_item(bluesup_item0), fetch_item(bluesup_item1), fetch_item(bluesup_item2), fetch_item(bluesup_item3), fetch_item(bluesup_item4), fetch_item(bluesup_item5), fetch_rune(bluesup_rune0), fetch_rune(bluesup_rune1), fetch_rune(bluesup_rune2), fetch_rune(bluesup_rune3), fetch_rune(bluesup_rune4), fetch_rune(bluesup_rune5),
-        
-        # Red Top
-        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, fetch_item(redtop_item0), fetch_item(redtop_item1), fetch_item(redtop_item2), fetch_item(redtop_item3), fetch_item(redtop_item4), fetch_item(redtop_item5), fetch_rune(redtop_rune0), fetch_rune(redtop_rune1), fetch_rune(redtop_rune2), fetch_rune(redtop_rune3), fetch_rune(redtop_rune4), fetch_rune(redtop_rune5),
-        
-        # Red JG
-        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, fetch_item(redjg_item0), fetch_item(redjg_item1), fetch_item(redjg_item2), fetch_item(redjg_item3), fetch_item(redjg_item4), fetch_item(redjg_item5), fetch_rune(redjg_rune0), fetch_rune(redjg_rune1), fetch_rune(redjg_rune2), fetch_rune(redjg_rune3), fetch_rune(redjg_rune4), fetch_rune(redjg_rune5),
-        # Red Mid
-        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, fetch_item(redmid_item0), fetch_item(redmid_item1), fetch_item(redmid_item2), fetch_item(redmid_item3), fetch_item(redmid_item4), fetch_item(redmid_item5), fetch_rune(redmid_rune0), fetch_rune(redmid_rune1), fetch_rune(redmid_rune2), fetch_rune(redmid_rune3), fetch_rune(redmid_rune4), fetch_rune(redmid_rune5),
-        
-        # Red Bot
-        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, fetch_item(redbot_item0), fetch_item(redbot_item1), fetch_item(redbot_item2), fetch_item(redbot_item3), fetch_item(redbot_item4), fetch_item(redbot_item5), fetch_rune(redbot_rune0), fetch_rune(redbot_rune1), fetch_rune(redbot_rune2), fetch_rune(redbot_rune3), fetch_rune(redbot_rune4), fetch_rune(redbot_rune5),
-        
-        # Red Sup
-        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, fetch_item(redsup_item0), fetch_item(redsup_item1), fetch_item(redsup_item2), fetch_item(redsup_item3), fetch_item(redsup_item4), fetch_item(redsup_item5), fetch_rune(redsup_rune0), fetch_rune(redsup_rune1), fetch_rune(redsup_rune2), fetch_rune(redsup_rune3), fetch_rune(redsup_rune4), fetch_rune(redsup_rune5)
-    )
-    # for region in test_list:
-    #     for rank in rank_list:
-    #         if rank == 'Challenger':
-    #             players = fetch_challenger(region, api_key)
-    #         elif rank == 'Grandmaster':
-    #             players = fetch_grandmaster(region, api_key)
-    #         else:
-    #             players = fetch_master(region, api_key)
-    #         update_players(players, engine, region, api_key, rank)
+    item_map = fetch_item(patch)
+    rune_map = fetch_rune(patch)
+
+    #Updates player base
+    for region in test_list:
+        for rank in rank_list:
+            if rank == 'Challenger':
+                players = fetch_challenger(region, api_key)
+            elif rank == 'Grandmaster':
+                players = fetch_grandmaster(region, api_key)
+            else:
+                players = fetch_master(region, api_key)
+            update_players(players, engine, region, api_key, rank)
+            print("Updated high elo player base")
+            for player in fetch_id():
+                last_updated = int(player[10].timestamp())
+                all_matches = fetch_matches(region, player[2], api_key, last_updated)
+                print("Fetching matches since last update")
+                for match in all_matches:
+                    print("Fetching match data")
+                    (time_stamp, game_duration, result,
+                        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5,
+                        
+                        # Blue JG
+                        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5,
+                        
+                        # Blue Mid
+                        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5,
+                        
+                        # Blue Bot
+                        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5,
+                        
+                        # Blue Sup
+                        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5,
+                        
+                        # Red Top
+                        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5,
+                        
+                        # Red JG
+                        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5,
+                        
+                        # Red Mid
+                        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5,
+                        
+                        # Red Bot
+                        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5,
+                        
+                        # Red Sup
+                        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5
+                    ) = fetch_match_data(match, api_key, region)
+                    print("Fetched match data")
+                    print("Inserting the game")
+                    insert_game(match, time_stamp, engine, game_duration, result, patch,
+                        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, item_map[bluetop_item0], item_map[bluetop_item1], item_map[bluetop_item2], item_map[bluetop_item3], item_map[bluetop_item4], item_map[bluetop_item5], rune_map[bluetop_rune0], rune_map[bluetop_rune1], rune_map[bluetop_rune2], rune_map[bluetop_rune3], rune_map[bluetop_rune4], rune_map[bluetop_rune5],
+                        
+                        # Blue JG
+                        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, item_map[bluejg_item0], item_map[bluejg_item1], item_map[bluejg_item2], item_map[bluejg_item3], item_map[bluejg_item4], item_map[bluejg_item5], rune_map[bluejg_rune0], rune_map[bluejg_rune1], rune_map[bluejg_rune2], rune_map[bluejg_rune3], rune_map[bluejg_rune4], rune_map[bluejg_rune5],
+                        
+                        # Blue Mid
+                        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, item_map[bluemid_item0], item_map[bluemid_item1], item_map[bluemid_item2], item_map[bluemid_item3], item_map[bluemid_item4], item_map[bluemid_item5], rune_map[bluemid_rune0], rune_map[bluemid_rune1], rune_map[bluemid_rune2], rune_map[bluemid_rune3], rune_map[bluemid_rune4], rune_map[bluemid_rune5],
+                        
+                        # Blue Botfetch_item(
+                        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, item_map[bluebot_item0], item_map[bluebot_item1], item_map[bluebot_item2], item_map[bluebot_item3], item_map[bluebot_item4], item_map[bluebot_item5], rune_map[bluebot_rune0], rune_map[bluebot_rune1], rune_map[bluebot_rune2], rune_map[bluebot_rune3], rune_map[bluebot_rune4], rune_map[bluebot_rune5],
+                        
+                        # Blue Sup
+                        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, item_map[bluesup_item0], item_map[bluesup_item1], item_map[bluesup_item2], item_map[bluesup_item3], item_map[bluesup_item4], item_map[bluesup_item5], rune_map[bluesup_rune0], rune_map[bluesup_rune1], rune_map[bluesup_rune2], rune_map[bluesup_rune3], rune_map[bluesup_rune4], rune_map[bluesup_rune5],
+                        
+                        # Red Top
+                        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, item_map[redtop_item0], item_map[redtop_item1], item_map[redtop_item2], item_map[redtop_item3], item_map[redtop_item4], item_map[redtop_item5], rune_map[redtop_rune0], rune_map[redtop_rune1], rune_map[redtop_rune2], rune_map[redtop_rune3], rune_map[redtop_rune4], rune_map[redtop_rune5],
+                        
+                        # Red JG
+                        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, item_map[redjg_item0], item_map[redjg_item1], item_map[redjg_item2], item_map[redjg_item3], item_map[redjg_item4], item_map[redjg_item5], rune_map[redjg_rune0], rune_map[redjg_rune1], rune_map[redjg_rune2], rune_map[redjg_rune3], rune_map[redjg_rune4], rune_map[redjg_rune5],
+                        # Red Mid
+                        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, item_map[redmid_item0], item_map[redmid_item1], item_map[redmid_item2], item_map[redmid_item3], item_map[redmid_item4], item_map[redmid_item5], rune_map[redmid_rune0], rune_map[redmid_rune1], rune_map[redmid_rune2], rune_map[redmid_rune3], rune_map[redmid_rune4], rune_map[redmid_rune5],
+                        
+                        # Red Bot
+                        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, item_map[redbot_item0], item_map[redbot_item1], item_map[redbot_item2], item_map[redbot_item3], item_map[redbot_item4], item_map[redbot_item5], rune_map[redbot_rune0], rune_map[redbot_rune1], rune_map[redbot_rune2], rune_map[redbot_rune3], rune_map[redbot_rune4], rune_map[redbot_rune5],
+                        
+                        # Red Sup
+                        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, item_map[redsup_item0], item_map[redsup_item1], item_map[redsup_item2], item_map[redsup_item3], item_map[redsup_item4], item_map[redsup_item5], rune_map[redsup_rune0], rune_map[redsup_rune1], rune_map[redsup_rune2], rune_map[redsup_rune3], rune_map[redsup_rune4], rune_map[redsup_rune5]
+                    )
+                print("Inserted game into database")
+                insert_player(engine, player[1], player[2], player[3], player[4], player[5], player[6], player[7], player[8], player[9], datetime.now())
+                print("updated timestamp")
 
 
+            
