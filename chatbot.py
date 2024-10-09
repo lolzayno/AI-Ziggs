@@ -47,10 +47,47 @@ def get_chatbot_response(user_input, messages):
             else:
                 return "Sorry, I couldn't get a response."
 
+def get_match(engine, champ):
+    sql = """
+    SELECT * FROM highelo_matches
+    WHERE bluetop_champ = :champ
+    OR bluejg_champ = :champ
+    OR bluemid_champ = :champ
+    OR bluebot_champ = :champ
+    OR bluesup_champ = :champ
+    OR redtop_champ = :champ
+    OR redjg_champ = :champ
+    OR redmid_champ = :champ
+    OR redbot_champ = :champ
+    OR redsup_champ = :champ
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(sql), {
+            "champ": champ
+        })
+        rows = result.fetchall()
+        processed_rows = [list(row[3:]) for row in rows]
+        return processed_rows
+
+def get_rune(engine, champ, lane):
+    sql = """
+    SELECT
+        bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5,
+        COUNT(*) AS combo_count
+        FROM highelo_matches
+        WHERE bluetop_champ = :champ
+            AND redtop_champ = :opponent
+        GROUP BY bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5
+        ORDER BY combo_count DESC
+        LIMIT 1;
+    """
+
 if __name__ == '__main__':
-    openai.api_key = get_json("openai_key")
-    memory_messages = []
-    while True:
-        user_input = input("You: ")  # Get user input from the console
-        response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
-        print(f"Chatbot: {response}")  # Print the chatbot's response
+    engine = establish_connection()
+    print(get_match(engine, 'Ziggs'))
+    # openai.api_key = get_json("openai_key")
+    # memory_messages = []
+    # while True:
+    #     user_input = input("You: ")  # Get user input from the console
+    #     response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
+    #     print(f"Chatbot: {response}")  # Print the chatbot's response
