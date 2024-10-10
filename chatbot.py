@@ -4,6 +4,8 @@ import openai
 import time
 from sqlalchemy import create_engine, text
 import rune
+import requests
+import backend
 def establish_connection():
     engine = create_engine(f'mysql+mysqlconnector://{get_json("user")}:{get_json("host_pw")}@{get_json("host_host")}/{get_json("database")}')
     try:
@@ -70,16 +72,35 @@ def get_match(engine, champ):
         processed_rows = [list(row[3:]) for row in rows]
         return processed_rows
 
+def get_timeline(region, match_code, api_key, item_map, item0, item1, item2, item3, item4, item5, item6):
+    timeline_url = f"https://{region}.api.riotgames.com/lol/match/v5/matches/{match_code}/timeline?api_key={api_key}"
+    response = requests.get(timeline_url)
+    cameron = '-XW7PzJWobDOHKsgz26RmwArIuB4XwyhcFVRdKBMKfJADZKMrt_7Rf27IF_CLBmJ2ZeEtXquQjvHfQ'
+    data = response.json()
+    for x, player in enumerate(data['metadata']['participants']):
+        if player == cameron:
+            participantid = x + 1
+            break
+    for x in range(len(data['info']['frames'])):
+        for item in data['info']['frames'][x]['events']:
+            if item['type'] == 'ITEM_PURCHASED':
+                if item['participantId'] == participantid:
+                    print(item_map[item['itemId']])
+
+    return
 if __name__ == '__main__':
-    engine = establish_connection()
-    print("Most used rune against Specific champ")
-    print(rune.get_rune_opponent(engine, "Ziggs", "Zeri"))
-    print("Most used rune as Specific Champ")
-    print(rune.get_rune_all(engine, "Ziggs"))
-    print("Most used rune in specific lane and opponent")
-    print(rune.get_rune_specific(engine, "Ziggs", "Zeri", "bot"))
-    print("Most used rune as a champ in specific lane")
-    print(rune.get_rune(engine, "Ziggs", "mid"))
+    api_key = get_json("API_KEY")
+    item_map = backend.fetch_item("14.20.1")
+    #engine = establish_connection()
+    print(get_timeline("americas", "NA1_5129856678", api_key, item_map))
+    # print("Most used rune against Specific champ")
+    # print(rune.get_rune_opponent(engine, "Ziggs", "Zeri"))
+    # print("Most used rune as Specific Champ")
+    # print(rune.get_rune_all(engine, "Ziggs"))
+    # print("Most used rune in specific lane and opponent")
+    # print(rune.get_rune_specific(engine, "Ziggs", "Zeri", "bot"))
+    # print("Most used rune as a champ in specific lane")
+    # print(rune.get_rune(engine, "Ziggs", "mid"))
     # openai.api_key = get_json("openai_key")
     # memory_messages = []
     # while True:
