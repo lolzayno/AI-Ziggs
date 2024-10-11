@@ -116,7 +116,6 @@ def fetch_challenger(region, api_key):
     response = requests.get(challenger_link)
     print("Fetching Challenger Players")
     print(response.status_code)
-    time.sleep(1)
     return response.json()
 
 #fetches grandmaster players
@@ -125,7 +124,6 @@ def fetch_grandmaster(region, api_key):
     response = requests.get(grandmaster_link)
     print("Fetching Grandmaster Players")
     print(response.status_code)
-    time.sleep(1)
     return response.json()
 
 #fetches master players
@@ -134,7 +132,6 @@ def fetch_master(region, api_key):
     response = requests.get(master_link)
     print("Fetching Mater Players")
     print(response.status_code)
-    time.sleep(1)
     return response.json()
 
 #fetches matches of user
@@ -196,7 +193,6 @@ def get_ign(puuid, api_key, region):
 
 def update_players(player_list, engine, region, api_key, rank):
     for player in player_list['entries']:
-        time.sleep(1)
         puuid = get_puuid(player['summonerId'], api_key, region)
         ign, tag = get_ign(puuid, api_key, region)
         insert_player(engine, player['summonerId'], puuid, ign, tag, region, rank, player['leaguePoints'], player['wins'], player['losses'], datetime.now())

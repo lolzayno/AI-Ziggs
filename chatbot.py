@@ -72,10 +72,43 @@ def get_match(engine, champ):
         processed_rows = [list(row[3:]) for row in rows]
         return processed_rows
 
+def fetch_puuid(region, ign, tag, api_key):
+    if region in ['BR1', 'LA1', 'LA2', 'NA1', 'OC1']:
+        region = 'americas'
+    elif region in ['JP1', 'KR', 'PH2', 'SG2', 'TH2', 'TW2', 'VN2']:
+        region = 'asia'
+    elif region in ['EUW1', 'EUN1', 'RU', 'TR1', 'ME1']:
+        region = 'europe'
+    url = f'https://{region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{ign}/{tag}?api_key={api_key}'
+    response = requests.get(url)
+    print("Fetching puuid")
+    print(response.status_code)
+    return response.json()['puuid']
+
+def spectate_game(region, puuid, api_key):
+    url = f'https://{region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{puuid}?api_key={api_key}'
+    response = requests.get(url)
+    print("Fetching puuid")
+    print(response.status_code)
+    data = response.json()
+    participants = data['participants']
+    opponents = {}
+    for player in participants:
+        if player['puuid'] == puuid:
+            champion = player['championId']
+            team = player['teamId']
+        elif player['teamId'] != team:
+            opponents[player['championId']] = {
+                    'spellId1': player['spell1Id'],
+                    'spellId2': player['spell2Id'],
+                    'runes': player['perks']  # Ensure you have runes data available
+                }
+    return opponents
 if __name__ == '__main__':
     api_key = get_json("API_KEY")
-    item_map = backend.fetch_item("14.20.1")
-    #engine = establish_connection()
+    #item_map = backend.fetch_item("14.20.1")
+    engine = establish_connection()
+    rune.model_rune_data(engine)
     # print("Most used rune against Specific champ")
     # print(rune.get_rune_opponent(engine, "Ziggs", "Zeri"))
     # print("Most used rune as Specific Champ")

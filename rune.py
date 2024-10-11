@@ -712,3 +712,147 @@ def get_rune_opponent(engine, champ, opponent):
             return top_rune_combo
         else:
             return None
+        
+def model_rune_data(engine):
+    sql = """
+        SELECT
+        bluetop_champ AS champion,
+        bluetop_rune0 AS rune0_used,
+        bluetop_rune1 AS rune1_used,
+        bluetop_rune2 AS rune2_used,
+        bluetop_rune3 AS rune3_used,
+        bluetop_rune4 AS rune4_used,
+        bluetop_rune5 AS rune5_used,
+        redtop_champ AS opponent,
+        0 as lane
+    FROM highelo_matches
+    UNION ALL
+    SELECT
+        bluejg_champ AS champion,
+        bluejg_rune0 AS rune0_used,
+        bluejg_rune1 AS rune1_used,
+        bluejg_rune2 AS rune2_used,
+        bluejg_rune3 AS rune3_used,
+        bluejg_rune4 AS rune4_used,
+        bluejg_rune5 AS rune5_used,
+        redjg_champ AS opponent,
+        1 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        bluemid_champ AS champion,
+        bluemid_rune0 AS rune0_used,
+        bluemid_rune1 AS rune1_used,
+        bluemid_rune2 AS rune2_used,
+        bluemid_rune3 AS rune3_used,
+        bluemid_rune4 AS rune4_used,
+        bluemid_rune5 AS rune5_used,
+        redmid_champ AS opponent,
+        2 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        bluebot_champ AS champion,
+        bluebot_rune0 AS rune0_used,
+        bluebot_rune1 AS rune1_used,
+        bluebot_rune2 AS rune2_used,
+        bluebot_rune3 AS rune3_used,
+        bluebot_rune4 AS rune4_used,
+        bluebot_rune5 AS rune5_used,
+        redbot_champ AS opponent,
+        3 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        bluesup_champ AS champion,
+        bluesup_rune0 AS rune0_used,
+        bluesup_rune1 AS rune1_used,
+        bluesup_rune2 AS rune2_used,
+        bluesup_rune3 AS rune3_used,
+        bluesup_rune4 AS rune4_used,
+        bluesup_rune5 AS rune5_used,
+        redsup_champ AS opponent,
+        4 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        redtop_champ AS champion,
+        redtop_rune0 AS rune0_used,
+        redtop_rune1 AS rune1_used,
+        redtop_rune2 AS rune2_used,
+        redtop_rune3 AS rune3_used,
+        redtop_rune4 AS rune4_used,
+        redtop_rune5 AS rune5_used,
+        bluetop_champ AS opponent,
+        0 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        redjg_champ AS champion,
+        redjg_rune0 AS rune0_used,
+        redjg_rune1 AS rune1_used,
+        redjg_rune2 AS rune2_used,
+        redjg_rune3 AS rune3_used,
+        redjg_rune4 AS rune4_used,
+        redjg_rune5 AS rune5_used,
+        bluejg_champ AS opponent,
+        1 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        redmid_champ AS champion,
+        redmid_rune0 AS rune0_used,
+        redmid_rune1 AS rune1_used,
+        redmid_rune2 AS rune2_used,
+        redmid_rune3 AS rune3_used,
+        redmid_rune4 AS rune4_used,
+        redmid_rune5 AS rune5_used,
+        bluemid_champ AS opponent,
+        2 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        redbot_champ AS champion,
+        redbot_rune0 AS rune0_used,
+        redbot_rune1 AS rune1_used,
+        redbot_rune2 AS rune2_used,
+        redbot_rune3 AS rune3_used,
+        redbot_rune4 AS rune4_used,
+        redbot_rune5 AS rune5_used,
+        bluebot_champ AS opponent,
+        3 as lane
+    FROM highelo_matches
+
+    UNION ALL
+
+    SELECT
+        redsup_champ AS champion,
+        redsup_rune0 AS rune0_used,
+        redsup_rune1 AS rune1_used,
+        redsup_rune2 AS rune2_used,
+        redsup_rune3 AS rune3_used,
+        redsup_rune4 AS rune4_used,
+        redsup_rune5 AS rune5_used,
+        bluesup_champ AS opponent,
+        4 as lane
+    FROM highelo_matches;
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(sql), {
+        })
+        results = result.fetchall()
+        return results
