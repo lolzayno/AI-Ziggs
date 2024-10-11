@@ -787,6 +787,7 @@ if __name__ == '__main__':
             for player in fetch_id():
                 last_updated = int(player[10].timestamp())
                 all_matches = fetch_matches(region, player[2], api_key, last_updated)
+                insert_player(engine, player[1], player[2], player[3], player[4], player[5], player[6], player[7], player[8], player[9], datetime.now())
                 print("Fetching matches since last update")
                 for match in all_matches:
                     print("Fetching match data") 
@@ -857,8 +858,6 @@ if __name__ == '__main__':
                             redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
                         )
                     print("Inserted game into database")
-                    insert_player(engine, player[1], player[2], player[3], player[4], player[5], player[6], player[7], player[8], player[9], datetime.now())
-                    print("updated timestamp")
 
 
             
