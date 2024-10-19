@@ -315,8 +315,6 @@ def get_timeline(region, match_code, api_key, puuid, item_map, item0, item1, ite
                             item_list.append(item_id)
                         else:
                             item_list.append(sup_id)
-    # component_list = sorted(component_list, key=lambda x: x['gold'], reverse=True)
-    # component_list = [item['name'] for item in component_list]
     full_list = item_list + component_list
     final_list = []
     for x in range(6):
@@ -359,10 +357,6 @@ def fetch_match_data(match_id, api_key, region):
             if player['teamPosition'] == 'TOP' and player['teamId'] == 100:
                 bluetop_id = data['info']['participants'][count]['summonerId']
                 bluetop_champ = data['info']['participants'][count]['championName']
-                bluetop_kills = data['info']['participants'][count]['kills']
-                bluetop_deaths = data['info']['participants'][count]['deaths']
-                bluetop_assists = data['info']['participants'][count]['assists']
-                bluetop_kda = data['info']['participants'][count]['challenges']['kda']
                 bluetop_item0 = data['info']['participants'][count]['item0']
                 bluetop_item1 = data['info']['participants'][count]['item1']
                 bluetop_item2 = data['info']['participants'][count]['item2']
@@ -375,22 +369,14 @@ def fetch_match_data(match_id, api_key, region):
                 bluetop_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluetop_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluetop_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluetop_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                bluetop_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                bluetop_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                bluetop_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                bluetop_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                bluetop_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                bluetop_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                bluetop_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluetop_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                bluetop_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5)
             elif player['teamPosition'] == 'TOP' and player['teamId'] == 200:
                 redtop_id = data['info']['participants'][count]['summonerId']
                 redtop_champ = data['info']['participants'][count]['championName']
-                redtop_kills = data['info']['participants'][count]['kills']
-                redtop_deaths = data['info']['participants'][count]['deaths']
-                redtop_assists = data['info']['participants'][count]['assists']
-                redtop_kda = data['info']['participants'][count]['challenges']['kda']
                 redtop_item0 = data['info']['participants'][count]['item0']
                 redtop_item1 = data['info']['participants'][count]['item1']
                 redtop_item2= data['info']['participants'][count]['item2']
@@ -403,22 +389,14 @@ def fetch_match_data(match_id, api_key, region):
                 redtop_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redtop_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redtop_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redtop_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                redtop_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                redtop_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                redtop_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                redtop_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                redtop_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                redtop_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                redtop_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redtop_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                redtop_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5)
             elif player['teamPosition'] == 'JUNGLE' and player['teamId'] == 100:
                 bluejg_id = data['info']['participants'][count]['summonerId']
                 bluejg_champ = data['info']['participants'][count]['championName']
-                bluejg_kills = data['info']['participants'][count]['kills']
-                bluejg_deaths = data['info']['participants'][count]['deaths']
-                bluejg_assists = data['info']['participants'][count]['assists']
-                bluejg_kda = data['info']['participants'][count]['challenges']['kda']
                 bluejg_item0 = data['info']['participants'][count]['item0']
                 bluejg_item1 = data['info']['participants'][count]['item1']
                 bluejg_item2 = data['info']['participants'][count]['item2']
@@ -431,22 +409,14 @@ def fetch_match_data(match_id, api_key, region):
                 bluejg_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluejg_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluejg_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluejg_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                bluejg_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                bluejg_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                bluejg_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                bluejg_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                bluejg_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                bluejg_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                bluejg_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluejg_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                bluejg_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5)
             elif player['teamPosition'] == 'JUNGLE' and player['teamId'] == 200:
                 redjg_id = data['info']['participants'][count]['summonerId']
                 redjg_champ = data['info']['participants'][count]['championName']
-                redjg_kills = data['info']['participants'][count]['kills']
-                redjg_deaths = data['info']['participants'][count]['deaths']
-                redjg_assists = data['info']['participants'][count]['assists']
-                redjg_kda = data['info']['participants'][count]['challenges']['kda']
                 redjg_item0 = data['info']['participants'][count]['item0']
                 redjg_item1 = data['info']['participants'][count]['item1']
                 redjg_item2 = data['info']['participants'][count]['item2']
@@ -459,22 +429,14 @@ def fetch_match_data(match_id, api_key, region):
                 redjg_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redjg_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redjg_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redjg_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                redjg_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                redjg_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                redjg_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                redjg_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                redjg_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                redjg_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                redjg_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redjg_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                redjg_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5)
             elif player['teamPosition'] == 'MIDDLE' and player['teamId'] == 100:
                 bluemid_id = data['info']['participants'][count]['summonerId']
                 bluemid_champ = data['info']['participants'][count]['championName']
-                bluemid_kills = data['info']['participants'][count]['kills']
-                bluemid_deaths = data['info']['participants'][count]['deaths']
-                bluemid_assists = data['info']['participants'][count]['assists']
-                bluemid_kda = data['info']['participants'][count]['challenges']['kda']
                 bluemid_item0 = data['info']['participants'][count]['item0']
                 bluemid_item1 = data['info']['participants'][count]['item1']
                 bluemid_item2 = data['info']['participants'][count]['item2']
@@ -487,22 +449,14 @@ def fetch_match_data(match_id, api_key, region):
                 bluemid_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluemid_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluemid_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluemid_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                bluemid_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                bluemid_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                bluemid_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                bluemid_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                bluemid_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                bluemid_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                bluemid_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluemid_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                bluemid_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5)
             elif player['teamPosition'] == 'MIDDLE' and player['teamId'] == 200:
                 redmid_id = data['info']['participants'][count]['summonerId']
                 redmid_champ = data['info']['participants'][count]['championName']
-                redmid_kills = data['info']['participants'][count]['kills']
-                redmid_deaths = data['info']['participants'][count]['deaths']
-                redmid_assists = data['info']['participants'][count]['assists']
-                redmid_kda = data['info']['participants'][count]['challenges']['kda']
                 redmid_item0 = data['info']['participants'][count]['item0']
                 redmid_item1 = data['info']['participants'][count]['item1']
                 redmid_item2 = data['info']['participants'][count]['item2']
@@ -515,22 +469,14 @@ def fetch_match_data(match_id, api_key, region):
                 redmid_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redmid_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redmid_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redmid_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                redmid_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                redmid_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                redmid_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                redmid_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                redmid_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                redmid_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                redmid_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redmid_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                redmid_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5)
             elif player['teamPosition'] == 'BOTTOM' and player['teamId'] == 100:
                 bluebot_id = data['info']['participants'][count]['summonerId']
                 bluebot_champ = data['info']['participants'][count]['championName']
-                bluebot_kills = data['info']['participants'][count]['kills']
-                bluebot_deaths = data['info']['participants'][count]['deaths']
-                bluebot_assists = data['info']['participants'][count]['assists']
-                bluebot_kda = data['info']['participants'][count]['challenges']['kda']
                 bluebot_item0 = data['info']['participants'][count]['item0']
                 bluebot_item1 = data['info']['participants'][count]['item1']
                 bluebot_item2 = data['info']['participants'][count]['item2']
@@ -543,22 +489,14 @@ def fetch_match_data(match_id, api_key, region):
                 bluebot_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluebot_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluebot_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluebot_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                bluebot_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                bluebot_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                bluebot_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                bluebot_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                bluebot_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                bluebot_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                bluebot_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluebot_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                bluebot_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5)
             elif player['teamPosition'] == 'BOTTOM' and player['teamId'] == 200:
                 redbot_id = data['info']['participants'][count]['summonerId']
                 redbot_champ = data['info']['participants'][count]['championName']
-                redbot_kills = data['info']['participants'][count]['kills']
-                redbot_deaths = data['info']['participants'][count]['deaths']
-                redbot_assists = data['info']['participants'][count]['assists']
-                redbot_kda = data['info']['participants'][count]['challenges']['kda']
                 redbot_item0 = data['info']['participants'][count]['item0']
                 redbot_item1 = data['info']['participants'][count]['item1']
                 redbot_item2 = data['info']['participants'][count]['item2']
@@ -571,22 +509,14 @@ def fetch_match_data(match_id, api_key, region):
                 redbot_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redbot_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redbot_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redbot_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                redbot_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                redbot_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                redbot_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                redbot_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                redbot_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                redbot_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                redbot_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redbot_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                redbot_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5)
             elif player['teamPosition'] == 'UTILITY' and player['teamId'] == 100:
                 bluesup_id = data['info']['participants'][count]['summonerId']
                 bluesup_champ = data['info']['participants'][count]['championName']
-                bluesup_kills = data['info']['participants'][count]['kills']
-                bluesup_deaths = data['info']['participants'][count]['deaths']
-                bluesup_assists = data['info']['participants'][count]['assists']
-                bluesup_kda = data['info']['participants'][count]['challenges']['kda']
                 bluesup_item0 = data['info']['participants'][count]['item0']
                 bluesup_item1 = data['info']['participants'][count]['item1']
                 bluesup_item2 = data['info']['participants'][count]['item2']
@@ -599,22 +529,14 @@ def fetch_match_data(match_id, api_key, region):
                 bluesup_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluesup_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluesup_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluesup_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                bluesup_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                bluesup_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                bluesup_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                bluesup_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                bluesup_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                bluesup_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                bluesup_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluesup_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                bluesup_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5)
             elif player['teamPosition'] == 'UTILITY' and player['teamId'] == 200:
                 redsup_id = data['info']['participants'][count]['summonerId']
                 redsup_champ = data['info']['participants'][count]['championName']
-                redsup_kills = data['info']['participants'][count]['kills']
-                redsup_deaths = data['info']['participants'][count]['deaths']
-                redsup_assists = data['info']['participants'][count]['assists']
-                redsup_kda = data['info']['participants'][count]['challenges']['kda']
                 redsup_item0 = data['info']['participants'][count]['item0']
                 redsup_item1 = data['info']['participants'][count]['item1']
                 redsup_item2 = data['info']['participants'][count]['item2']
@@ -627,13 +549,9 @@ def fetch_match_data(match_id, api_key, region):
                 redsup_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redsup_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redsup_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redsup_magicdmgdealt = data['info']['participants'][count]['magicDamageDealtToChampions']
-                redsup_physicaldmgdealt = data['info']['participants'][count]['physicalDamageDealtToChampions']
-                redsup_truedmgdealt = data['info']['participants'][count]['trueDamageDealtToChampions']
-                redsup_ccdealt = data['info']['participants'][count]['totalTimeCCDealt']
-                redsup_magicdmgreceive = data['info']['participants'][count]['magicDamageTaken']
-                redsup_physicaldmgreceive = data['info']['participants'][count]['physicalDamageTaken']
-                redsup_truedmgreceive = data['info']['participants'][count]['trueDamageTaken']
+                redsup_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redsup_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
+                redsup_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5)
             else:
@@ -646,67 +564,67 @@ def fetch_match_data(match_id, api_key, region):
             return None    
     return (timestamp, gameduration, result,
         # Blue Top
-        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_kda, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_magicdmgdealt, bluetop_physicaldmgdealt, bluetop_truedmgdealt, bluetop_ccdealt, bluetop_magicdmgreceive, bluetop_physicaldmgreceive, bluetop_truedmgreceive,
+        bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
         
         # Blue JG
-        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_kda, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_magicdmgdealt, bluejg_physicaldmgdealt, bluejg_truedmgdealt, bluejg_ccdealt, bluejg_magicdmgreceive, bluejg_physicaldmgreceive, bluejg_truedmgreceive,
+        bluejg_id, bluejg_champ, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_rune6, bluejg_rune7, bluejg_rune8,
         
         # Blue Mid
-        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_kda, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_magicdmgdealt, bluemid_physicaldmgdealt, bluemid_truedmgdealt, bluemid_ccdealt, bluemid_magicdmgreceive, bluemid_physicaldmgreceive, bluemid_truedmgreceive,
-        
+        bluemid_id, bluemid_champ, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_rune6, bluemid_rune7, bluemid_rune8,
+ 
         # Blue Bot
-        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_kda, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_magicdmgdealt, bluebot_physicaldmgdealt, bluebot_truedmgdealt, bluebot_ccdealt, bluebot_magicdmgreceive, bluebot_physicaldmgreceive, bluebot_truedmgreceive,
+        bluebot_id, bluebot_champ, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_rune6, bluebot_rune7, bluebot_rune8,
         
         # Blue Sup
-        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_kda, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_magicdmgdealt, bluesup_physicaldmgdealt, bluesup_truedmgdealt, bluesup_ccdealt, bluesup_magicdmgreceive, bluesup_physicaldmgreceive, bluesup_truedmgreceive,
+        bluesup_id, bluesup_champ, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_rune6, bluesup_rune7, bluesup_rune8,
         
         # Red Top
-        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_kda, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_magicdmgdealt, redtop_physicaldmgdealt, redtop_truedmgdealt, redtop_ccdealt, redtop_magicdmgreceive, redtop_physicaldmgreceive, redtop_truedmgreceive,
+        redtop_id, redtop_champ, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_rune6, redtop_rune7, redtop_rune8,
         
         # Red JG
-        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_kda, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_magicdmgdealt, redjg_physicaldmgdealt, redjg_truedmgdealt, redjg_ccdealt, redjg_magicdmgreceive, redjg_physicaldmgreceive, redjg_truedmgreceive,
+        redjg_id, redjg_champ, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_rune6, redjg_rune7, redjg_rune8,
         
         # Red Mid
-        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_kda, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_magicdmgdealt, redmid_physicaldmgdealt, redmid_truedmgdealt, redmid_ccdealt, redmid_magicdmgreceive, redmid_physicaldmgreceive, redmid_truedmgreceive,
+        redmid_id, redmid_champ, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_rune6, redmid_rune7, redmid_rune8,
         
         # Red Bot
-        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_kda, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_magicdmgdealt, redbot_physicaldmgdealt, redbot_truedmgdealt, redbot_ccdealt, redbot_magicdmgreceive, redbot_physicaldmgreceive, redbot_truedmgreceive,
+        redbot_id, redbot_champ, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_rune6, redbot_rune7, redbot_rune8,
         
         # Red Sup
-        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
+        redsup_id, redsup_champ, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_rune6, redsup_rune7, redsup_rune8
     )
 
 #inserts data into database
-def insert_game(match_code, game_stamp, engine, game_duration, outcome, patch, champion_map,
+def insert_game(match_code, game_stamp, engine, game_duration, outcome, patch, item_map, rune_map,
         # Blue Top
-        bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_kda, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_magicdmgdealt, bluetop_physicaldmgdealt, bluetop_truedmgdealt, bluetop_ccdealt, bluetop_magicdmgreceive, bluetop_physicaldmgreceive, bluetop_truedmgreceive,
+        bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
         
         # Blue JG
-        bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_kda, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_magicdmgdealt, bluejg_physicaldmgdealt, bluejg_truedmgdealt, bluejg_ccdealt, bluejg_magicdmgreceive, bluejg_physicaldmgreceive, bluejg_truedmgreceive,
+        bluejg_id, bluejg_champ, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_rune6, bluejg_rune7, bluejg_rune8,
         
         # Blue Mid
-        bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_kda, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_magicdmgdealt, bluemid_physicaldmgdealt, bluemid_truedmgdealt, bluemid_ccdealt, bluemid_magicdmgreceive, bluemid_physicaldmgreceive, bluemid_truedmgreceive,
+        bluemid_id, bluemid_champ, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_rune6, bluemid_rune7, bluemid_rune8,
         
         # Blue Bot
-        bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_kda, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_magicdmgdealt, bluebot_physicaldmgdealt, bluebot_truedmgdealt, bluebot_ccdealt, bluebot_magicdmgreceive, bluebot_physicaldmgreceive, bluebot_truedmgreceive,
+        bluebot_id, bluebot_champ, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_rune6, bluebot_rune7, bluebot_rune8,
         
         # Blue Sup
-        bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_kda, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_magicdmgdealt, bluesup_physicaldmgdealt, bluesup_truedmgdealt, bluesup_ccdealt, bluesup_magicdmgreceive, bluesup_physicaldmgreceive, bluesup_truedmgreceive,
+        bluesup_id, bluesup_champ, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_rune6, bluesup_rune7, bluesup_rune8,
         
         # Red Top
-        redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_kda, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_magicdmgdealt, redtop_physicaldmgdealt, redtop_truedmgdealt, redtop_ccdealt, redtop_magicdmgreceive, redtop_physicaldmgreceive, redtop_truedmgreceive,
+        redtop_id, redtop_champ, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_rune6, redtop_rune7, redtop_rune8,
         
         # Red JG
-        redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_kda, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_magicdmgdealt, redjg_physicaldmgdealt, redjg_truedmgdealt, redjg_ccdealt, redjg_magicdmgreceive, redjg_physicaldmgreceive, redjg_truedmgreceive,
+        redjg_id, redjg_champ, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_rune6, redjg_rune7, redjg_rune8,
         
         # Red Mid
-        redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_kda, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_magicdmgdealt, redmid_physicaldmgdealt, redmid_truedmgdealt, redmid_ccdealt, redmid_magicdmgreceive, redmid_physicaldmgreceive, redmid_truedmgreceive,
+        redmid_id, redmid_champ, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_rune6, redmid_rune7, redmid_rune8,
         
         # Red Bot
-        redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_kda, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_magicdmgdealt, redbot_physicaldmgdealt, redbot_truedmgdealt, redbot_ccdealt, redbot_magicdmgreceive, redbot_physicaldmgreceive, redbot_truedmgreceive,
+        redbot_id, redbot_champ, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_rune6, redbot_rune7, redbot_rune8,
         
         # Red Sup
-        redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
+        redsup_id, redsup_champ, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_rune6, redsup_rune7, redsup_rune8
     ):
         check_sql = """
         SELECT * FROM highelo_matches
@@ -724,72 +642,72 @@ def insert_game(match_code, game_stamp, engine, game_duration, outcome, patch, c
                 connection.execute(text(""" 
                         INSERT INTO highelo_matches(
                             match_code, game_stamp, game_duration, result, patch,
-                            bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_kda, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_magicdmgdealt, bluetop_physicaldmgdealt, bluetop_truedmgdealt, bluetop_ccdealt, bluetop_magicdmgreceive, bluetop_physicaldmgreceive, bluetop_truedmgreceive,
-                            bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_kda, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_magicdmgdealt, bluejg_physicaldmgdealt, bluejg_truedmgdealt, bluejg_ccdealt, bluejg_magicdmgreceive, bluejg_physicaldmgreceive, bluejg_truedmgreceive,
-                            bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_kda, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_magicdmgdealt, bluemid_physicaldmgdealt, bluemid_truedmgdealt, bluemid_ccdealt, bluemid_magicdmgreceive, bluemid_physicaldmgreceive, bluemid_truedmgreceive,
-                            bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_kda, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_magicdmgdealt, bluebot_physicaldmgdealt, bluebot_truedmgdealt, bluebot_ccdealt, bluebot_magicdmgreceive, bluebot_physicaldmgreceive, bluebot_truedmgreceive,
-                            bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_kda, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_magicdmgdealt, bluesup_physicaldmgdealt, bluesup_truedmgdealt, bluesup_ccdealt, bluesup_magicdmgreceive, bluesup_physicaldmgreceive, bluesup_truedmgreceive,
-                            redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_kda, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_magicdmgdealt, redtop_physicaldmgdealt, redtop_truedmgdealt, redtop_ccdealt, redtop_magicdmgreceive, redtop_physicaldmgreceive, redtop_truedmgreceive,
-                            redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_kda, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_magicdmgdealt, redjg_physicaldmgdealt, redjg_truedmgdealt, redjg_ccdealt, redjg_magicdmgreceive, redjg_physicaldmgreceive, redjg_truedmgreceive,
-                            redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_kda, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_magicdmgdealt, redmid_physicaldmgdealt, redmid_truedmgdealt, redmid_ccdealt, redmid_magicdmgreceive, redmid_physicaldmgreceive, redmid_truedmgreceive,
-                            redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_kda, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_magicdmgdealt, redbot_physicaldmgdealt, redbot_truedmgdealt, redbot_ccdealt, redbot_magicdmgreceive, redbot_physicaldmgreceive, redbot_truedmgreceive,
-                            redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
+                            bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
+                            bluejg_id, bluejg_champ, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_rune6, bluejg_rune7, bluejg_rune8,
+                            bluemid_id, bluemid_champ, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_rune6, bluemid_rune7, bluemid_rune8,
+                            bluebot_id, bluebot_champ, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_rune6, bluebot_rune7, bluebot_rune8,
+                            bluesup_id, bluesup_champ, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_rune6, bluesup_rune7, bluesup_rune8,
+                            redtop_id, redtop_champ, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_rune6, redtop_rune7, redtop_rune8,
+                            redjg_id, redjg_champ, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_rune6, redjg_rune7, redjg_rune8,
+                            redmid_id, redmid_champ, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_rune6, redmid_rune7, redmid_rune8,
+                            redbot_id, redbot_champ, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_rune6, redbot_rune7, redbot_rune8,
+                            redsup_id, redsup_champ, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_rune6, redsup_rune7, redsup_rune8
                         ) VALUES (
                             :match_code, :game_stamp, :game_duration, :result, :patch,
-                            :bluetop_id, :bluetop_champ, :bluetop_kills, :bluetop_deaths, :bluetop_assists, :bluetop_kda, :bluetop_item0, :bluetop_item1, :bluetop_item2, :bluetop_item3, :bluetop_item4, :bluetop_item5, :bluetop_rune0, :bluetop_rune1, :bluetop_rune2, :bluetop_rune3, :bluetop_rune4, :bluetop_rune5, :bluetop_magicdmgdealt, :bluetop_physicaldmgdealt, :bluetop_truedmgdealt, :bluetop_ccdealt, :bluetop_magicdmgreceive, :bluetop_physicaldmgreceive, :bluetop_truedmgreceive,
-                            :bluejg_id, :bluejg_champ, :bluejg_kills, :bluejg_deaths, :bluejg_assists, :bluejg_kda, :bluejg_item0, :bluejg_item1, :bluejg_item2, :bluejg_item3, :bluejg_item4, :bluejg_item5, :bluejg_rune0, :bluejg_rune1, :bluejg_rune2, :bluejg_rune3, :bluejg_rune4, :bluejg_rune5, :bluejg_magicdmgdealt, :bluejg_physicaldmgdealt, :bluejg_truedmgdealt, :bluejg_ccdealt, :bluejg_magicdmgreceive, :bluejg_physicaldmgreceive, :bluejg_truedmgreceive,
-                            :bluemid_id, :bluemid_champ, :bluemid_kills, :bluemid_deaths, :bluemid_assists, :bluemid_kda, :bluemid_item0, :bluemid_item1, :bluemid_item2, :bluemid_item3, :bluemid_item4, :bluemid_item5, :bluemid_rune0, :bluemid_rune1, :bluemid_rune2, :bluemid_rune3, :bluemid_rune4, :bluemid_rune5, :bluemid_magicdmgdealt, :bluemid_physicaldmgdealt, :bluemid_truedmgdealt, :bluemid_ccdealt, :bluemid_magicdmgreceive, :bluemid_physicaldmgreceive, :bluemid_truedmgreceive,
-                            :bluebot_id, :bluebot_champ, :bluebot_kills, :bluebot_deaths, :bluebot_assists, :bluebot_kda, :bluebot_item0, :bluebot_item1, :bluebot_item2, :bluebot_item3, :bluebot_item4, :bluebot_item5, :bluebot_rune0, :bluebot_rune1, :bluebot_rune2, :bluebot_rune3, :bluebot_rune4, :bluebot_rune5, :bluebot_magicdmgdealt, :bluebot_physicaldmgdealt, :bluebot_truedmgdealt, :bluebot_ccdealt, :bluebot_magicdmgreceive, :bluebot_physicaldmgreceive, :bluebot_truedmgreceive,
-                            :bluesup_id, :bluesup_champ, :bluesup_kills, :bluesup_deaths, :bluesup_assists, :bluesup_kda, :bluesup_item0, :bluesup_item1, :bluesup_item2, :bluesup_item3, :bluesup_item4, :bluesup_item5, :bluesup_rune0, :bluesup_rune1, :bluesup_rune2, :bluesup_rune3, :bluesup_rune4, :bluesup_rune5, :bluesup_magicdmgdealt, :bluesup_physicaldmgdealt, :bluesup_truedmgdealt, :bluesup_ccdealt, :bluesup_magicdmgreceive, :bluesup_physicaldmgreceive, :bluesup_truedmgreceive,
-                            :redtop_id, :redtop_champ, :redtop_kills, :redtop_deaths, :redtop_assists, :redtop_kda, :redtop_item0, :redtop_item1, :redtop_item2, :redtop_item3, :redtop_item4, :redtop_item5, :redtop_rune0, :redtop_rune1, :redtop_rune2, :redtop_rune3, :redtop_rune4, :redtop_rune5, :redtop_magicdmgdealt, :redtop_physicaldmgdealt, :redtop_truedmgdealt, :redtop_ccdealt, :redtop_magicdmgreceive, :redtop_physicaldmgreceive, :redtop_truedmgreceive,
-                            :redjg_id, :redjg_champ, :redjg_kills, :redjg_deaths, :redjg_assists, :redjg_kda, :redjg_item0, :redjg_item1, :redjg_item2, :redjg_item3, :redjg_item4, :redjg_item5, :redjg_rune0, :redjg_rune1, :redjg_rune2, :redjg_rune3, :redjg_rune4, :redjg_rune5, :redjg_magicdmgdealt, :redjg_physicaldmgdealt, :redjg_truedmgdealt, :redjg_ccdealt, :redjg_magicdmgreceive, :redjg_physicaldmgreceive, :redjg_truedmgreceive,
-                            :redmid_id, :redmid_champ, :redmid_kills, :redmid_deaths, :redmid_assists, :redmid_kda, :redmid_item0, :redmid_item1, :redmid_item2, :redmid_item3, :redmid_item4, :redmid_item5, :redmid_rune0, :redmid_rune1, :redmid_rune2, :redmid_rune3, :redmid_rune4, :redmid_rune5, :redmid_magicdmgdealt, :redmid_physicaldmgdealt, :redmid_truedmgdealt, :redmid_ccdealt, :redmid_magicdmgreceive, :redmid_physicaldmgreceive, :redmid_truedmgreceive,
-                            :redbot_id, :redbot_champ, :redbot_kills, :redbot_deaths, :redbot_assists, :redbot_kda, :redbot_item0, :redbot_item1, :redbot_item2, :redbot_item3, :redbot_item4, :redbot_item5, :redbot_rune0, :redbot_rune1, :redbot_rune2, :redbot_rune3, :redbot_rune4, :redbot_rune5, :redbot_magicdmgdealt, :redbot_physicaldmgdealt, :redbot_truedmgdealt, :redbot_ccdealt, :redbot_magicdmgreceive, :redbot_physicaldmgreceive, :redbot_truedmgreceive,
-                            :redsup_id, :redsup_champ, :redsup_kills, :redsup_deaths, :redsup_assists, :redbot_kda, :redsup_item0, :redsup_item1, :redsup_item2, :redsup_item3, :redsup_item4, :redsup_item5, :redsup_rune0, :redsup_rune1, :redsup_rune2, :redsup_rune3, :redsup_rune4, :redsup_rune5, :redsup_magicdmgdealt, :redsup_physicaldmgdealt, :redsup_truedmgdealt, :redsup_ccdealt, :redsup_magicdmgreceive, :redsup_physicaldmgreceive, :redsup_truedmgreceive
+                            :bluetop_id, :bluetop_champ, :bluetop_item0, :bluetop_item1, :bluetop_item2, :bluetop_item3, :bluetop_item4, :bluetop_item5, :bluetop_rune0, :bluetop_rune1, :bluetop_rune2, :bluetop_rune3, :bluetop_rune4, :bluetop_rune5, :bluetop_rune6, :bluetop_rune7, :bluetop_rune8,
+                            :bluejg_id, :bluejg_champ, :bluejg_item0, :bluejg_item1, :bluejg_item2, :bluejg_item3, :bluejg_item4, :bluejg_item5, :bluejg_rune0, :bluejg_rune1, :bluejg_rune2, :bluejg_rune3, :bluejg_rune4, :bluejg_rune5, :bluejg_rune6, :bluejg_rune7, :bluejg_rune8,
+                            :bluemid_id, :bluemid_champ, :bluemid_item0, :bluemid_item1, :bluemid_item2, :bluemid_item3, :bluemid_item4, :bluemid_item5, :bluemid_rune0, :bluemid_rune1, :bluemid_rune2, :bluemid_rune3, :bluemid_rune4, :bluemid_rune5, :bluemid_rune6, :bluemid_rune7, :bluemid_rune8,
+                            :bluebot_id, :bluebot_champ, :bluebot_item0, :bluebot_item1, :bluebot_item2, :bluebot_item3, :bluebot_item4, :bluebot_item5, :bluebot_rune0, :bluebot_rune1, :bluebot_rune2, :bluebot_rune3, :bluebot_rune4, :bluebot_rune5, :bluebot_rune6, :bluebot_rune7, :bluebot_rune8,
+                            :bluesup_id, :bluesup_champ, :bluesup_item0, :bluesup_item1, :bluesup_item2, :bluesup_item3, :bluesup_item4, :bluesup_item5, :bluesup_rune0, :bluesup_rune1, :bluesup_rune2, :bluesup_rune3, :bluesup_rune4, :bluesup_rune5, :bluesup_rune6, :bluesup_rune7, :bluesup_rune8,
+                            :redtop_id, :redtop_champ, :redtop_item0, :redtop_item1, :redtop_item2, :redtop_item3, :redtop_item4, :redtop_item5, :redtop_rune0, :redtop_rune1, :redtop_rune2, :redtop_rune3, :redtop_rune4, :redtop_rune5, :redtop_rune6, :redtop_rune7, :redtop_rune8,
+                            :redjg_id, :redjg_champ, :redjg_item0, :redjg_item1, :redjg_item2, :redjg_item3, :redjg_item4, :redjg_item5, :redjg_rune0, :redjg_rune1, :redjg_rune2, :redjg_rune3, :redjg_rune4, :redjg_rune5, redjg_rune6, :redjg_rune7, :redjg_rune8,
+                            :redmid_id, :redmid_champ, :redmid_item0, :redmid_item1, :redmid_item2, :redmid_item3, :redmid_item4, :redmid_item5, :redmid_rune0, :redmid_rune1, :redmid_rune2, :redmid_rune3, :redmid_rune4, :redmid_rune5, :redmid_rune6, :redmid_rune7, :redmid_rune8,
+                            :redbot_id, :redbot_champ, :redbot_item0, :redbot_item1, :redbot_item2, :redbot_item3, :redbot_item4, :redbot_item5, :redbot_rune0, :redbot_rune1, :redbot_rune2, :redbot_rune3, :redbot_rune4, :redbot_rune5, :redbot_rune6, :redbot_rune7, :redbot_rune8,
+                            :redsup_id, :redsup_champ, :redsup_item0, :redsup_item1, :redsup_item2, :redsup_item3, :redsup_item4, :redsup_item5, :redsup_rune0, :redsup_rune1, :redsup_rune2, :redsup_rune3, :redsup_rune4, :redsup_rune5, :redsup_rune6, :redsup_rune7, :redsup_rune8
                         )
                     """
                 ), {
                     "match_code": match_code, "game_stamp": game_stamp, "game_duration": game_duration, "result": outcome, "patch": patch,
-                    "bluetop_id": bluetop_id, "bluetop_champ": champion_map[bluetop_champ], "bluetop_kills": bluetop_kills, "bluetop_deaths": bluetop_deaths, "bluetop_assists": bluetop_assists, "bluetop_kda": bluetop_kda, "bluetop_item0": bluetop_item0, "bluetop_item1": bluetop_item1, 
-                    "bluetop_item2": bluetop_item2, "bluetop_item3": bluetop_item3, "bluetop_item4": bluetop_item4, "bluetop_item5": bluetop_item5, 
-                    "bluetop_rune0": bluetop_rune0, "bluetop_rune1": bluetop_rune1, "bluetop_rune2": bluetop_rune2, "bluetop_rune3": bluetop_rune3,
-                    "bluetop_rune4": bluetop_rune4, "bluetop_rune5": bluetop_rune5, "bluetop_magicdmgdealt": bluetop_magicdmgdealt, "bluetop_physicaldmgdealt": bluetop_physicaldmgdealt, "bluetop_truedmgdealt": bluetop_truedmgdealt, "bluetop_ccdealt": bluetop_ccdealt, "bluetop_magicdmgreceive": bluetop_magicdmgreceive, "bluetop_physicaldmgreceive": bluetop_physicaldmgreceive, "bluetop_truedmgreceive": bluetop_truedmgreceive, 
-                    "redtop_id": redtop_id, "redtop_champ": champion_map[redtop_champ], "redtop_kills": redtop_kills, "redtop_deaths": redtop_deaths, "redtop_assists": redtop_assists, "redtop_kda": redtop_kda, "redtop_item0": redtop_item0, "redtop_item1": redtop_item1, 
-                    "redtop_item2": redtop_item2, "redtop_item3": redtop_item3, "redtop_item4": redtop_item4, "redtop_item5": redtop_item5, 
-                    "redtop_rune0": redtop_rune0, "redtop_rune1": redtop_rune1, "redtop_rune2": redtop_rune2, "redtop_rune3": redtop_rune3, 
-                    "redtop_rune4": redtop_rune4, "redtop_rune5": redtop_rune5, "redtop_magicdmgdealt": redtop_magicdmgdealt, "redtop_physicaldmgdealt": redtop_physicaldmgdealt, "redtop_truedmgdealt": redtop_truedmgdealt, "redtop_ccdealt": redtop_ccdealt, "redtop_magicdmgreceive": redtop_magicdmgreceive, "redtop_physicaldmgreceive": redtop_physicaldmgreceive, "redtop_truedmgreceive": redtop_truedmgreceive,
-                    "bluejg_id": bluejg_id, "bluejg_champ": champion_map[bluejg_champ], "bluejg_kills": bluejg_kills, "bluejg_deaths": bluejg_deaths, "bluejg_assists": bluejg_assists, "bluejg_kda": bluejg_kda,"bluejg_item0": bluejg_item0, "bluejg_item1": bluejg_item1, 
-                    "bluejg_item2": bluejg_item2, "bluejg_item3": bluejg_item3, "bluejg_item4": bluejg_item4, "bluejg_item5": bluejg_item5, 
-                    "bluejg_rune0": bluejg_rune0, "bluejg_rune1": bluejg_rune1, "bluejg_rune2": bluejg_rune2, "bluejg_rune3": bluejg_rune3, 
-                    "bluejg_rune4": bluejg_rune4, "bluejg_rune5": bluejg_rune5, "bluejg_magicdmgdealt": bluejg_magicdmgdealt, "bluejg_physicaldmgdealt": bluejg_physicaldmgdealt, "bluejg_truedmgdealt": bluejg_truedmgdealt, "bluejg_ccdealt": bluejg_ccdealt, "bluejg_magicdmgreceive": bluejg_magicdmgreceive, "bluejg_physicaldmgreceive": bluejg_physicaldmgreceive, "bluejg_truedmgreceive": bluejg_truedmgreceive,
-                    "redjg_id": redjg_id, "redjg_champ": champion_map[redjg_champ], "redjg_kills": redjg_kills, "redjg_deaths": redjg_deaths, "redjg_assists": redjg_assists, "redjg_kda": redjg_kda,"redjg_item0": redjg_item0, "redjg_item1": redjg_item1, 
-                    "redjg_item2": redjg_item2, "redjg_item3": redjg_item3, "redjg_item4": redjg_item4, "redjg_item5": redjg_item5, 
-                    "redjg_rune0": redjg_rune0, "redjg_rune1": redjg_rune1, "redjg_rune2": redjg_rune2, "redjg_rune3": redjg_rune3, 
-                    "redjg_rune4": redjg_rune4, "redjg_rune5": redjg_rune5, "redjg_magicdmgdealt": redjg_magicdmgdealt, "redjg_physicaldmgdealt": redjg_physicaldmgdealt, "redjg_truedmgdealt": redjg_truedmgdealt, "redjg_ccdealt": redjg_ccdealt, "redjg_magicdmgreceive": redjg_magicdmgreceive, "redjg_physicaldmgreceive": redjg_physicaldmgreceive, "redjg_truedmgreceive": redjg_truedmgreceive,
-                    "bluemid_id": bluemid_id, "bluemid_champ": champion_map[bluemid_champ], "bluemid_kills": bluemid_kills, "bluemid_deaths": bluemid_deaths, "bluemid_assists": bluemid_assists, "bluemid_kda": bluemid_kda, "bluemid_item0": bluemid_item0, "bluemid_item1": bluemid_item1, 
-                    "bluemid_item2": bluemid_item2, "bluemid_item3": bluemid_item3, "bluemid_item4": bluemid_item4, "bluemid_item5": bluemid_item5, 
-                    "bluemid_rune0": bluemid_rune0, "bluemid_rune1": bluemid_rune1, "bluemid_rune2": bluemid_rune2, "bluemid_rune3": bluemid_rune3, 
-                    "bluemid_rune4": bluemid_rune4, "bluemid_rune5": bluemid_rune5, "bluemid_magicdmgdealt": bluemid_magicdmgdealt, "bluemid_physicaldmgdealt": bluemid_physicaldmgdealt, "bluemid_truedmgdealt": bluemid_truedmgdealt, "bluemid_ccdealt": bluemid_ccdealt, "bluemid_magicdmgreceive": bluemid_magicdmgreceive, "bluemid_physicaldmgreceive": bluemid_physicaldmgreceive, "bluemid_truedmgreceive": bluemid_truedmgreceive,
-                    "redmid_id": redmid_id, "redmid_champ": champion_map[redmid_champ], "redmid_kills": redmid_kills, "redmid_deaths": redmid_deaths, "redmid_assists": redmid_assists, "redmid_kda": redmid_kda, "redmid_item0": redmid_item0, "redmid_item1": redmid_item1, 
-                    "redmid_item2": redmid_item2, "redmid_item3": redmid_item3, "redmid_item4": redmid_item4, "redmid_item5": redmid_item5, 
-                    "redmid_rune0": redmid_rune0, "redmid_rune1": redmid_rune1, "redmid_rune2": redmid_rune2, "redmid_rune3": redmid_rune3, 
-                    "redmid_rune4": redmid_rune4, "redmid_rune5": redmid_rune5, "redmid_magicdmgdealt": redmid_magicdmgdealt, "redmid_physicaldmgdealt": redmid_physicaldmgdealt, "redmid_truedmgdealt": redmid_truedmgdealt, "redmid_ccdealt": redmid_ccdealt, "redmid_magicdmgreceive": redmid_magicdmgreceive, "redmid_physicaldmgreceive": redmid_physicaldmgreceive, "redmid_truedmgreceive": redmid_truedmgreceive,
-                    "bluebot_id": bluebot_id, "bluebot_champ": champion_map[bluebot_champ], "bluebot_kills": bluebot_kills, "bluebot_deaths": bluebot_deaths, "bluebot_assists": bluebot_assists, "bluebot_kda": bluebot_kda, "bluebot_item0": bluebot_item0, "bluebot_item1": bluebot_item1, 
-                    "bluebot_item2": bluebot_item2, "bluebot_item3": bluebot_item3, "bluebot_item4": bluebot_item4, "bluebot_item5": bluebot_item5, 
-                    "bluebot_rune0": bluebot_rune0, "bluebot_rune1": bluebot_rune1, "bluebot_rune2": bluebot_rune2, "bluebot_rune3": bluebot_rune3, 
-                    "bluebot_rune4": bluebot_rune4, "bluebot_rune5": bluebot_rune5, "bluebot_magicdmgdealt": bluebot_magicdmgdealt, "bluebot_physicaldmgdealt": bluebot_physicaldmgdealt, "bluebot_truedmgdealt": bluebot_truedmgdealt, "bluebot_ccdealt": bluebot_ccdealt, "bluebot_magicdmgreceive": bluebot_magicdmgreceive, "bluebot_physicaldmgreceive": bluebot_physicaldmgreceive, "bluebot_truedmgreceive": bluebot_truedmgreceive,
-                    "redbot_id": redbot_id, "redbot_champ": champion_map[redbot_champ], "redbot_kills": redbot_kills, "redbot_deaths": redbot_deaths, "redbot_assists": redbot_assists, "redbot_kda": redbot_kda, "redbot_item0": redbot_item0, "redbot_item1": redbot_item1, 
-                    "redbot_item2": redbot_item2, "redbot_item3": redbot_item3, "redbot_item4": redbot_item4, "redbot_item5": redbot_item5, 
-                    "redbot_rune0": redbot_rune0, "redbot_rune1": redbot_rune1, "redbot_rune2": redbot_rune2, "redbot_rune3": redbot_rune3, 
-                    "redbot_rune4": redbot_rune4, "redbot_rune5": redbot_rune5, "redbot_magicdmgdealt": redbot_magicdmgdealt, "redbot_physicaldmgdealt": redbot_physicaldmgdealt, "redbot_truedmgdealt": redbot_truedmgdealt, "redbot_ccdealt": redbot_ccdealt, "redbot_magicdmgreceive": redbot_magicdmgreceive, "redbot_physicaldmgreceive": redbot_physicaldmgreceive, "redbot_truedmgreceive": redbot_truedmgreceive,
-                    "bluesup_id": bluesup_id, "bluesup_champ": champion_map[bluesup_champ], "bluesup_kills": bluesup_kills, "bluesup_deaths": bluesup_deaths, "bluesup_assists": bluesup_assists, "bluesup_kda": bluesup_kda, "bluesup_item0": bluesup_item0, "bluesup_item1": bluesup_item1, 
-                    "bluesup_item2": bluesup_item2, "bluesup_item3": bluesup_item3, "bluesup_item4": bluesup_item4, "bluesup_item5": bluesup_item5, 
-                    "bluesup_rune0": bluesup_rune0, "bluesup_rune1": bluesup_rune1, "bluesup_rune2": bluesup_rune2, "bluesup_rune3": bluesup_rune3, 
-                    "bluesup_rune4": bluesup_rune4, "bluesup_rune5": bluesup_rune5, "bluesup_magicdmgdealt": bluesup_magicdmgdealt, "bluesup_physicaldmgdealt": bluesup_physicaldmgdealt, "bluesup_truedmgdealt": bluesup_truedmgdealt, "bluesup_ccdealt": bluesup_ccdealt, "bluesup_magicdmgreceive": bluesup_magicdmgreceive, "bluesup_physicaldmgreceive": bluesup_physicaldmgreceive, "bluesup_truedmgreceive": bluesup_truedmgreceive,
-                    "redsup_id": redsup_id, "redsup_champ": champion_map[redsup_champ], "redsup_kills": redsup_kills, "redsup_deaths": redsup_deaths, "redsup_assists": redsup_assists, "redsup_kda": redsup_kda, "redsup_item0": redsup_item0, "redsup_item1": redsup_item1, 
-                    "redsup_item2": redsup_item2, "redsup_item3": redsup_item3, "redsup_item4": redsup_item4, "redsup_item5": redsup_item5, 
-                    "redsup_rune0": redsup_rune0, "redsup_rune1": redsup_rune1, "redsup_rune2": redsup_rune2, "redsup_rune3": redsup_rune3, 
-                    "redsup_rune4": redsup_rune4, "redsup_rune5": redsup_rune5, "redsup_magicdmgdealt": redsup_magicdmgdealt, "redsup_physicaldmgdealt": redsup_physicaldmgdealt, "redsup_truedmgdealt": redsup_truedmgdealt, "redsup_ccdealt": redsup_ccdealt, "redsup_magicdmgreceive": redsup_magicdmgreceive, "redsup_physicaldmgreceive": redsup_physicaldmgreceive, "redsup_truedmgreceive": redsup_truedmgreceive 
+                    "bluetop_id": bluetop_id, "bluetop_champ": bluetop_champ, "bluetop_item0": item_map[bluetop_item0]['name'], "bluetop_item1": item_map[bluetop_item1]['name'], 
+                    "bluetop_item2": item_map[bluetop_item2]['name'], "bluetop_item3": item_map[bluetop_item3]['name'], "bluetop_item4": item_map[bluetop_item4]['name'], "bluetop_item5": item_map[bluetop_item5]['name'], 
+                    "bluetop_rune0": rune_map[bluetop_rune0], "bluetop_rune1": rune_map[bluetop_rune1], "bluetop_rune2": rune_map[bluetop_rune2], "bluetop_rune3": rune_map[bluetop_rune3],
+                    "bluetop_rune4": rune_map[bluetop_rune4], "bluetop_rune5": rune_map[bluetop_rune5], "bluetop_rune6": rune_map[bluetop_rune6], "bluetop_rune7": rune_map[bluetop_rune7], "bluetop_rune8": rune_map[bluetop_rune8],
+                    "redtop_id": redtop_id, "redtop_champ": redtop_champ, "redtop_item0": item_map[redtop_item0]['name'], "redtop_item1": item_map[redtop_item1]['name'], 
+                    "redtop_item2": item_map[redtop_item2]['name'], "redtop_item3": item_map[redtop_item3]['name'], "redtop_item4": item_map[redtop_item4]['name'], "redtop_item5": item_map[redtop_item5]['name'], 
+                    "redtop_rune0": rune_map[redtop_rune0], "redtop_rune1": rune_map[redtop_rune1], "redtop_rune2": rune_map[redtop_rune2], "redtop_rune3": rune_map[redtop_rune3], 
+                    "redtop_rune4": rune_map[redtop_rune4], "redtop_rune5": rune_map[redtop_rune5], "redtop_rune6": rune_map[redtop_rune6], "redtop_rune7": rune_map[redtop_rune7], "redtop_rune8": rune_map[redtop_rune8],
+                    "bluejg_id": bluejg_id, "bluejg_champ": bluejg_champ, "bluejg_item0": item_map[bluejg_item0]['name'], "bluejg_item1": item_map[bluejg_item1]['name'], 
+                    "bluejg_item2": item_map[bluejg_item2]['name'], "bluejg_item3": item_map[bluejg_item3]['name'], "bluejg_item4": item_map[bluejg_item4]['name'], "bluejg_item5": item_map[bluejg_item5]['name'], 
+                    "bluejg_rune0": rune_map[bluejg_rune0], "bluejg_rune1": rune_map[bluejg_rune1], "bluejg_rune2": rune_map[bluejg_rune2], "bluejg_rune3": rune_map[bluejg_rune3], 
+                    "bluejg_rune4": rune_map[bluejg_rune4], "bluejg_rune5": rune_map[bluejg_rune5], "bluejg_rune6": rune_map[bluejg_rune6], "bluejg_rune7": rune_map[bluejg_rune7], "bluejg_rune8": rune_map[bluejg_rune8],
+                    "redjg_id": redjg_id, "redjg_champ": redjg_champ, "redjg_item0": item_map[redjg_item0]['name'], "redjg_item1": item_map[redjg_item1]['name'], 
+                    "redjg_item2": item_map[redjg_item2]['name'], "redjg_item3": item_map[redjg_item3]['name'], "redjg_item4": item_map[redjg_item4]['name'], "redjg_item5": item_map[redjg_item5]['name'], 
+                    "redjg_rune0": rune_map[redjg_rune0], "redjg_rune1": rune_map[redjg_rune1], "redjg_rune2": rune_map[redjg_rune2], "redjg_rune3": rune_map[redjg_rune3], 
+                    "redjg_rune4": rune_map[redjg_rune4], "redjg_rune5": rune_map[redjg_rune5], "redjg_rune6": rune_map[redjg_rune6], "redjg_rune7": rune_map[redjg_rune7], "redjg_rune8": rune_map[redjg_rune8],
+                    "bluemid_id": bluemid_id, "bluemid_champ": bluemid_champ, "bluemid_item0": item_map[bluemid_item0]['name'], "bluemid_item1": item_map[bluemid_item1]['name'], 
+                    "bluemid_item2": item_map[bluemid_item2]['name'], "bluemid_item3": item_map[bluemid_item3]['name'], "bluemid_item4": item_map[bluemid_item4]['name'], "bluemid_item5": item_map[bluemid_item5]['name'], 
+                    "bluemid_rune0": rune_map[bluemid_rune0], "bluemid_rune1": rune_map[bluemid_rune1], "bluemid_rune2": rune_map[bluemid_rune2], "bluemid_rune3": rune_map[bluemid_rune3], 
+                    "bluemid_rune4": rune_map[bluemid_rune4], "bluemid_rune5": rune_map[bluemid_rune5], "bluemid_rune6": rune_map[bluemid_rune6], "bluemid_rune7": rune_map[bluemid_rune7], "bluemid_rune8": rune_map[bluemid_rune8],
+                    "redmid_id": redmid_id, "redmid_champ": redmid_champ, "redmid_item0": item_map[redmid_item0]['name'], "redmid_item1": item_map[redmid_item1]['name'], 
+                    "redmid_item2": item_map[redmid_item2]['name'], "redmid_item3": item_map[redmid_item3]['name'], "redmid_item4": item_map[redmid_item4]['name'], "redmid_item5": item_map[redmid_item5]['name'], 
+                    "redmid_rune0": rune_map[redmid_rune0], "redmid_rune1": rune_map[redmid_rune1], "redmid_rune2": rune_map[redmid_rune2], "redmid_rune3": rune_map[redmid_rune3], 
+                    "redmid_rune4": rune_map[redmid_rune4], "redmid_rune5": rune_map[redmid_rune5], "redmid_rune6": rune_map[redmid_rune6], "redmid_rune7": rune_map[redmid_rune7], "redmid_rune8": rune_map[redmid_rune8],
+                    "bluebot_id": bluebot_id, "bluebot_champ": bluebot_champ, "bluebot_item0": item_map[bluebot_item0]['name'], "bluebot_item1": item_map[bluebot_item1]['name'], 
+                    "bluebot_item2": item_map[bluebot_item2]['name'], "bluebot_item3": item_map[bluebot_item3]['name'], "bluebot_item4": item_map[bluebot_item4]['name'], "bluebot_item5": item_map[bluebot_item5]['name'], 
+                    "bluebot_rune0": rune_map[bluebot_rune0], "bluebot_rune1": rune_map[bluebot_rune1], "bluebot_rune2": rune_map[bluebot_rune2], "bluebot_rune3": rune_map[bluebot_rune3], 
+                    "bluebot_rune4": rune_map[bluebot_rune4], "bluebot_rune5": rune_map[bluebot_rune5], "bluebot_rune6": rune_map[bluebot_rune6], "bluebot_rune7": rune_map[bluebot_rune7], "bluebot_rune8": rune_map[bluebot_rune8],
+                    "redbot_id": redbot_id, "redbot_champ": redbot_champ, "redbot_item0": item_map[redbot_item0]['name'], "redbot_item1": item_map[redbot_item1]['name'], 
+                    "redbot_item2": item_map[redbot_item2]['name'], "redbot_item3": item_map[redbot_item3]['name'], "redbot_item4": item_map[redbot_item4]['name'], "redbot_item5": item_map[redbot_item5]['name'], 
+                    "redbot_rune0": rune_map[redbot_rune0], "redbot_rune1": rune_map[redbot_rune1], "redbot_rune2": rune_map[redbot_rune2], "redbot_rune3": rune_map[redbot_rune3], 
+                    "redbot_rune4": rune_map[redbot_rune4], "redbot_rune5": rune_map[redbot_rune5], "redbot_rune6": rune_map[redbot_rune6], "redbot_rune7": rune_map[redbot_rune7], "redbot_rune8": rune_map[redbot_rune8],
+                    "bluesup_id": bluesup_id, "bluesup_champ": bluesup_champ, "bluesup_item0": item_map[bluesup_item0]['name'], "bluesup_item1": item_map[bluesup_item1]['name'], 
+                    "bluesup_item2": item_map[bluesup_item2]['name'], "bluesup_item3": item_map[bluesup_item3]['name'], "bluesup_item4": item_map[bluesup_item4]['name'], "bluesup_item5": item_map[bluesup_item5]['name'], 
+                    "bluesup_rune0": rune_map[bluesup_rune0], "bluesup_rune1": rune_map[bluesup_rune1], "bluesup_rune2": rune_map[bluesup_rune2], "bluesup_rune3": rune_map[bluesup_rune3], 
+                    "bluesup_rune4": rune_map[bluesup_rune4], "bluesup_rune5": rune_map[bluesup_rune5], "bluesup_rune6": rune_map[bluesup_rune6], "bluesup_rune7": rune_map[bluesup_rune7], "bluesup_rune8": rune_map[bluesup_rune8],
+                    "redsup_id": redsup_id, "redsup_champ": redsup_champ, "redsup_item0": item_map[redsup_item0]['name'], "redsup_item1": item_map[redsup_item1]['name'], 
+                    "redsup_item2": item_map[redsup_item2]['name'], "redsup_item3": item_map[redsup_item3]['name'], "redsup_item4": item_map[redsup_item4]['name'], "redsup_item5": item_map[redsup_item5]['name'], 
+                    "redsup_rune0": rune_map[redsup_rune0], "redsup_rune1": rune_map[redsup_rune1], "redsup_rune2": rune_map[redsup_rune2], "redsup_rune3": rune_map[redsup_rune3], 
+                    "redsup_rune4": rune_map[redsup_rune4], "redsup_rune5": rune_map[redsup_rune5], "redsup_rune6": rune_map[redsup_rune6], "redsup_rune7": rune_map[redsup_rune7], "redsup_rune8": rune_map[redsup_rune8]
                 })
 
 #fetches user from database
@@ -842,68 +760,66 @@ if __name__ == '__main__':
                     details = fetch_match_data(match, api_key, region)
                     if details is not None:
                         (time_stamp, game_duration, result,
-                            # Blue Top
-                            bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_kda, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_magicdmgdealt, bluetop_physicaldmgdealt, bluetop_truedmgdealt, bluetop_ccdealt, bluetop_magicdmgreceive, bluetop_physicaldmgreceive, bluetop_truedmgreceive,
-                            
-                            # Blue JG
-                            bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_kda, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_magicdmgdealt, bluejg_physicaldmgdealt, bluejg_truedmgdealt, bluejg_ccdealt, bluejg_magicdmgreceive, bluejg_physicaldmgreceive, bluejg_truedmgreceive,
-                            
-                            # Blue Mid
-                            bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_kda, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_magicdmgdealt, bluemid_physicaldmgdealt, bluemid_truedmgdealt, bluemid_ccdealt, bluemid_magicdmgreceive, bluemid_physicaldmgreceive, bluemid_truedmgreceive,
-                            
-                            # Blue Bot
-                            bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_kda, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_magicdmgdealt, bluebot_physicaldmgdealt, bluebot_truedmgdealt, bluebot_ccdealt, bluebot_magicdmgreceive, bluebot_physicaldmgreceive, bluebot_truedmgreceive,
-                            
-                            # Blue Sup
-                            bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_kda, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_magicdmgdealt, bluesup_physicaldmgdealt, bluesup_truedmgdealt, bluesup_ccdealt, bluesup_magicdmgreceive, bluesup_physicaldmgreceive, bluesup_truedmgreceive,
-                            
-                            # Red Top
-                            redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_kda, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_magicdmgdealt, redtop_physicaldmgdealt, redtop_truedmgdealt, redtop_ccdealt, redtop_magicdmgreceive, redtop_physicaldmgreceive, redtop_truedmgreceive,
-                            
-                            # Red JG
-                            redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_kda, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_magicdmgdealt, redjg_physicaldmgdealt, redjg_truedmgdealt, redjg_ccdealt, redjg_magicdmgreceive, redjg_physicaldmgreceive, redjg_truedmgreceive,
-                            
-                            # Red Mid
-                            redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_kda, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_magicdmgdealt, redmid_physicaldmgdealt, redmid_truedmgdealt, redmid_ccdealt, redmid_magicdmgreceive, redmid_physicaldmgreceive, redmid_truedmgreceive,
-                            
-                            # Red Bot
-                            redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_kda, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_magicdmgdealt, redbot_physicaldmgdealt, redbot_truedmgdealt, redbot_ccdealt, redbot_magicdmgreceive, redbot_physicaldmgreceive, redbot_truedmgreceive,
-                            
-                            # Red Sup
-                            redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
-                        ) = details
+                        # Blue Top
+                        bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
+                        
+                        # Blue JG
+                        bluejg_id, bluejg_champ, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_rune6, bluejg_rune7, bluejg_rune8,
+                        
+                        # Blue Mid
+                        bluemid_id, bluemid_champ, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_rune6, bluemid_rune7, bluemid_rune8,
+                
+                        # Blue Bot
+                        bluebot_id, bluebot_champ, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_rune6, bluebot_rune7, bluebot_rune8,
+                        
+                        # Blue Sup
+                        bluesup_id, bluesup_champ, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_rune6, bluesup_rune7, bluesup_rune8,
+                        
+                        # Red Top
+                        redtop_id, redtop_champ, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_rune6, redtop_rune7, redtop_rune8,
+                        
+                        # Red JG
+                        redjg_id, redjg_champ, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_rune6, redjg_rune7, redjg_rune8,
+                        
+                        # Red Mid
+                        redmid_id, redmid_champ, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_rune6, redmid_rune7, redmid_rune8,
+                        
+                        # Red Bot
+                        redbot_id, redbot_champ, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_rune6, redbot_rune7, redbot_rune8,
+                        
+                        # Red Sup
+                        redsup_id, redsup_champ, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_rune6, redsup_rune7, redsup_rune8
+                    ) = details
                         time.sleep(5)
                         print("Inserting the game")
-                        insert_game(match, time_stamp, engine, game_duration, result, patch, champion_map, 
+                        insert_game(match, time_stamp, engine, game_duration, result, patch, item_map, rune_map, 
                             # Blue Top
-                            bluetop_id, bluetop_champ, bluetop_kills, bluetop_deaths, bluetop_assists, bluetop_kda, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_magicdmgdealt, bluetop_physicaldmgdealt, bluetop_truedmgdealt, bluetop_ccdealt, bluetop_magicdmgreceive, bluetop_physicaldmgreceive, bluetop_truedmgreceive,
-                            
+                            bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
                             # Blue JG
-                            bluejg_id, bluejg_champ, bluejg_kills, bluejg_deaths, bluejg_assists, bluejg_kda, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_magicdmgdealt, bluejg_physicaldmgdealt, bluejg_truedmgdealt, bluejg_ccdealt, bluejg_magicdmgreceive, bluejg_physicaldmgreceive, bluejg_truedmgreceive,
-                            
+                            bluejg_id, bluejg_champ, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5, bluejg_rune0, bluejg_rune1, bluejg_rune2, bluejg_rune3, bluejg_rune4, bluejg_rune5, bluejg_rune6, bluejg_rune7, bluejg_rune8,
                             # Blue Mid
-                            bluemid_id, bluemid_champ, bluemid_kills, bluemid_deaths, bluemid_assists, bluemid_kda, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_magicdmgdealt, bluemid_physicaldmgdealt, bluemid_truedmgdealt, bluemid_ccdealt, bluemid_magicdmgreceive, bluemid_physicaldmgreceive, bluemid_truedmgreceive,
+                            bluemid_id, bluemid_champ, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5, bluemid_rune0, bluemid_rune1, bluemid_rune2, bluemid_rune3, bluemid_rune4, bluemid_rune5, bluemid_rune6, bluemid_rune7, bluemid_rune8,
                             
                             # Blue Bot
-                            bluebot_id, bluebot_champ, bluebot_kills, bluebot_deaths, bluebot_assists, bluebot_kda, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_magicdmgdealt, bluebot_physicaldmgdealt, bluebot_truedmgdealt, bluebot_ccdealt, bluebot_magicdmgreceive, bluebot_physicaldmgreceive, bluebot_truedmgreceive,
+                            bluebot_id, bluebot_champ, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5, bluebot_rune0, bluebot_rune1, bluebot_rune2, bluebot_rune3, bluebot_rune4, bluebot_rune5, bluebot_rune6, bluebot_rune7, bluebot_rune8,
                             
                             # Blue Sup
-                            bluesup_id, bluesup_champ, bluesup_kills, bluesup_deaths, bluesup_assists, bluesup_kda, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_magicdmgdealt, bluesup_physicaldmgdealt, bluesup_truedmgdealt, bluesup_ccdealt, bluesup_magicdmgreceive, bluesup_physicaldmgreceive, bluesup_truedmgreceive,
+                            bluesup_id, bluesup_champ, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5, bluesup_rune0, bluesup_rune1, bluesup_rune2, bluesup_rune3, bluesup_rune4, bluesup_rune5, bluesup_rune6, bluesup_rune7, bluesup_rune8,
                             
                             # Red Top
-                            redtop_id, redtop_champ, redtop_kills, redtop_deaths, redtop_assists, redtop_kda, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_magicdmgdealt, redtop_physicaldmgdealt, redtop_truedmgdealt, redtop_ccdealt, redtop_magicdmgreceive, redtop_physicaldmgreceive, redtop_truedmgreceive,
+                            redtop_id, redtop_champ, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5, redtop_rune0, redtop_rune1, redtop_rune2, redtop_rune3, redtop_rune4, redtop_rune5, redtop_rune6, redtop_rune7, redtop_rune8,
                             
                             # Red JG
-                            redjg_id, redjg_champ, redjg_kills, redjg_deaths, redjg_assists, redjg_kda, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_magicdmgdealt, redjg_physicaldmgdealt, redjg_truedmgdealt, redjg_ccdealt, redjg_magicdmgreceive, redjg_physicaldmgreceive, redjg_truedmgreceive,
+                            redjg_id, redjg_champ, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5, redjg_rune0, redjg_rune1, redjg_rune2, redjg_rune3, redjg_rune4, redjg_rune5, redjg_rune6, redjg_rune7, redjg_rune8,
                             
                             # Red Mid
-                            redmid_id, redmid_champ, redmid_kills, redmid_deaths, redmid_assists, redmid_kda, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_magicdmgdealt, redmid_physicaldmgdealt, redmid_truedmgdealt, redmid_ccdealt, redmid_magicdmgreceive, redmid_physicaldmgreceive, redmid_truedmgreceive,
+                            redmid_id, redmid_champ, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5, redmid_rune0, redmid_rune1, redmid_rune2, redmid_rune3, redmid_rune4, redmid_rune5, redmid_rune6, redmid_rune7, redmid_rune8,
                             
                             # Red Bot
-                            redbot_id, redbot_champ, redbot_kills, redbot_deaths, redbot_assists, redbot_kda, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_magicdmgdealt, redbot_physicaldmgdealt, redbot_truedmgdealt, redbot_ccdealt, redbot_magicdmgreceive, redbot_physicaldmgreceive, redbot_truedmgreceive,
+                            redbot_id, redbot_champ, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5, redbot_rune0, redbot_rune1, redbot_rune2, redbot_rune3, redbot_rune4, redbot_rune5, redbot_rune6, redbot_rune7, redbot_rune8,
                             
                             # Red Sup
-                            redsup_id, redsup_champ, redsup_kills, redsup_deaths, redsup_assists, redsup_kda, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_magicdmgdealt, redsup_physicaldmgdealt, redsup_truedmgdealt, redsup_ccdealt, redsup_magicdmgreceive, redsup_physicaldmgreceive, redsup_truedmgreceive
+                            redsup_id, redsup_champ, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5, redsup_rune0, redsup_rune1, redsup_rune2, redsup_rune3, redsup_rune4, redsup_rune5, redsup_rune6, redsup_rune7, redsup_rune8
                         )
                     print("Inserted game into database")
 

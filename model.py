@@ -19,53 +19,68 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 def rune_model(data):
-    #Step 1: Convert data to DataFrame
+    #Data is convereted to DataFrame so it can be processed by machine learning model
     df = pd.DataFrame(data)
 
-    #Step 2: Split the data into features (x_data) and labels (y_data)
+    #Seperates columns from data to distinguish x and y data
     x_data = df.drop(columns=['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5'])
     y_data = df[['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5']]
-    #Do i have to encode this or whatever to make the data better? Is there a way to give weights to each column?
 
-    # Step 3: Split the data into training and test sets
-    x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
+    # Step 3: One-Hot Encode all columns in x_data
+    x_onehot_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+    x_data_encoded = x_onehot_encoder.fit_transform(x_data)
+    print(x_onehot_encoder)
+    # Step 4: One-Hot Encode y_data as a whole
+    y_onehot_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+    y_data_encoded = y_onehot_encoder.fit_transform(y_data)
 
-    #Step 4: Initialize a list of LabelEncoders for each rune column: WHY??
-    label_encoders = [LabelEncoder() for _ in range(6)]
+    # Step 4: Split the data into training and test sets
+    # x_train, x_test, y_train, y_test = train_test_split(x_data_encoded, y_data, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x_data_encoded, y_data_encoded, test_size=0.2, random_state=42)
 
-    #Step 5: Fit and transform y_train and y_test for each rune: WHAT DOES THIS DO?
-    y_train_list = [label_encoders[i].fit_transform(y_train[f'rune{i}']) for i in range(6)]
-    y_test_list = [label_encoders[i].transform(y_test[f'rune{i}']) for i in range(6)]
+    # Step 5: Initialize OneHotEncoder for each rune column in y_data
+    # onehot_encoders = [OneHotEncoder(sparse_output=False, handle_unknown='ignore') for _ in range(6)]
 
-    # tep 6: Define the input layer for the model: WHAT DOES THIS DO
+    # Step 6: Fit and transform y_train and y_test for each rune using OneHotEncoder
+    # y_train_list = [onehot_encoders[i].fit_transform(y_train[[f'rune{i}']]) for i in range(6)]
+    # y_test_list = [onehot_encoders[i].transform(y_test[[f'rune{i}']]) for i in range(6)]
+
+    # Step 7: Define the input layer for the model (new shape after one-hot encoding x_data)
     input_layer = keras.Input(shape=(x_train.shape[1],))
 
-    #Shared dense layers: WHAT DOES THIS DO??
+    # Shared dense layers
     shared_layer = keras.layers.Dense(64, activation='relu')(input_layer)
     shared_layer = keras.layers.Dense(32, activation='relu')(shared_layer)
 
-    #Step 7: Create separate output layers for each rune prediction: WHAT DOES THIS DO
-    outputs = []
-    for i in range(6):
-        output = keras.layers.Dense(len(label_encoders[i].classes_), activation='softmax')(shared_layer)
-        outputs.append(output)
+    outputs = keras.layers.Dense(y_train.shape[1], activation='softmax')(shared_layer)
+    # Step 8: Create separate output layers for each rune prediction (using softmax)
+    # outputs = []
+    # for i in range(6):
+    #     output = keras.layers.Dense(y_train_list[i].shape[1], activation='softmax')(shared_layer)  # Number of classes from one-hot encoding
+    #     outputs.append(output)
 
-    #Step 8: Create the model with multiple outputs: WHAT DOES THIS DO
-    model = keras.Model(inputs=input_layer, outputs=outputs)
+    # Step 9: Create the model with multiple outputs
+    model = keras.Model(inputs=input_layer, outputs=[outputs])
 
-    #Step 9: Compile the model: WHAT DOES THIS DO?
     model.compile(optimizer='adam', 
-                  loss=['sparse_categorical_crossentropy'] * 6, 
-                  metrics=['accuracy'] * 6)
+                  loss='categorical_crossentropy', 
+                  metrics=['accuracy'])
 
-    #Step 10: Train the model: VALIDATION SPLIT??
-    model.fit(x_train, y_train_list, epochs=50, batch_size=10, validation_split=0.2)
+    # Step 10: Compile the model with categorical cross-entropy since we are using One-Hot Encoding
+    # model.compile(optimizer='adam', 
+    #               loss=['categorical_crossentropy'] * 6, 
+    #               metrics=['accuracy'] * 6)
 
-    # Step 11: Evaluate the model on the test set
-    accuracy = model.evaluate(x_test, y_test_list)
+    # Step 11: Train the model with validation split
+    model.fit(x_train, y_train, epochs=50, batch_size=10, validation_split=0.2)
+    # model.fit(x_train, y_train_list, epochs=50, batch_size=10, validation_split=0.2)
+
+    # Step 12: Evaluate the model on the test set
+    accuracy = model.evaluate(x_test, y_test)
+    # accuracy = model.evaluate(x_test, y_test_list)
     print(f'Test Accuracy: {accuracy}')
 
-    return model, label_encoders
+    return model, y_onehot_encoder, x_onehot_encoder
 
 def predict_runes(model, new_data, label_encoders):
     # Convert the input to a DataFrame to match the format used during training
@@ -88,6 +103,32 @@ def predict_runes(model, new_data, label_encoders):
     predicted_runes_combined = np.column_stack(predicted_runes).tolist()
     
     return predicted_runes_combined
+
+def prediction_runes(model, x_encoder, y_encoders, new_data_point):
+    # Step 1: Convert the new data point to DataFrame
+    new_df = pd.DataFrame([new_data_point])
+    
+    # Optional: Reindex to match expected features
+    new_df = new_df.reindex(columns=x_encoder.get_feature_names_out(), fill_value=0)
+
+    print("New DataFrame after reindexing:")
+    print(new_df)
+
+    # Step 2: One-Hot Encode the new data point using the same encoder
+    new_data_encoded = x_encoder.transform(new_df)
+
+    # Step 3: Make predictions with the model
+    predictions = model.predict(new_data_encoded)
+
+    # Step 4: Decode the predictions back to the original rune labels
+    decoded_runes = []
+    for i in range(len(predictions)):
+        predicted_classes = np.argmax(predictions[i], axis=1)
+        decoded_rune = y_encoders[i].inverse_transform(predicted_classes.reshape(1, -1))
+        decoded_runes.append(decoded_rune[0])
+
+    return decoded_runes
+
 
 def item_model(data, item_map):
     # Create DataFrame from input data
@@ -140,19 +181,19 @@ if __name__ == '__main__':
     rune_map = backend.fetch_rune(patch)
     item_map = backend.fetch_item(patch)
     data_rune = rune.final_rune_data(engine)
-    # models_rune, label_encoders = rune_model(data_rune)
-    # new_data = [{'champion': 115,
-    #             'champion_type': 1,
-    #             'champion_damage': 1,
-    #             'champion_role': 4,
-    #             'lane': 2,
-    #             'opponent_name': 238,
-    #             'opponent_type': 0,
-    #             'opponent_damage': 0,
-    #             'opponent_role': 2}]
-    # rune_prediction = predict_runes(models_rune, new_data, label_encoders)
-    # print(rune_prediction)
-    # for runer in rune_prediction[0]:
-    #     print(rune_map[runer])
+    models_rune, y_label, x_label = rune_model(data_rune)
+    new_data = [{'champion': 115,
+                'champion_type': 1,
+                'champion_damage': 1,
+                'champion_role': 4,
+                'lane': 2,
+                'opponent_name': 238,
+                'opponent_type': 0,
+                'opponent_damage': 0,
+                'opponent_role': 2}]
+    rune_prediction = prediction_runes(models_rune, x_label, y_label, new_data)
+    print(rune_prediction)
+    for runer in rune_prediction[0]:
+        print(rune_map[runer])
 
     
