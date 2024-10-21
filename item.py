@@ -176,7 +176,7 @@ def model_item_data(engine):
         result = connection.execute(text(sql), {
         })
         results = result.fetchall()
-        champ_map = rune.final_champ_map()
+        champ_map = rune.champ_mapping()
         actual_data = []
         for row in results:
             champion_name = row[0]
@@ -192,29 +192,29 @@ def model_item_data(engine):
             opponent_bot = row[10]
             opponent_sup = row[11]
             lane = row[12]
-            champion_type = process_type(champ_map[champion_name]["type"])
-            champion_damage = process_damage(champ_map[champion_name]["damage"])
-            champion_role = process_role(champ_map[champion_name]["role"])
+            champion_type = champ_map[champion_name]["type"]
+            champion_damage = champ_map[champion_name]["damage"]
+            champion_role = champ_map[champion_name]["role"]
             
-            opponent_top_type = process_type(champ_map[opponent_top]["type"])
-            opponent_top_damage = process_damage(champ_map[opponent_top]["damage"])
-            opponent_top_role = process_role(champ_map[opponent_top]["role"])
+            opponent_top_type = champ_map[opponent_top]["type"]
+            opponent_top_damage = champ_map[opponent_top]["damage"]
+            opponent_top_role = champ_map[opponent_top]["role"]
 
-            opponent_jg_type = process_type(champ_map[opponent_jg]["type"])
-            opponent_jg_damage = process_damage(champ_map[opponent_jg]["damage"])
-            opponent_jg_role = process_role(champ_map[opponent_jg]["role"])
+            opponent_jg_type = champ_map[opponent_jg]["type"]
+            opponent_jg_damage = champ_map[opponent_jg]["damage"]
+            opponent_jg_role = champ_map[opponent_jg]["role"]
+            
+            opponent_mid_type = champ_map[opponent_mid]["type"]
+            opponent_mid_damage = champ_map[opponent_mid]["damage"]
+            opponent_mid_role = champ_map[opponent_mid]["role"]
 
-            opponent_mid_type = process_type(champ_map[opponent_mid]["type"])
-            opponent_mid_damage = process_damage(champ_map[opponent_mid]["damage"])
-            opponent_mid_role = process_role(champ_map[opponent_mid]["role"])
+            opponent_bot_type = champ_map[opponent_bot]["type"]
+            opponent_bot_damage = champ_map[opponent_bot]["damage"]
+            opponent_bot_role = champ_map[opponent_bot]["role"]
 
-            opponent_bot_type = process_type(champ_map[opponent_bot]["type"])
-            opponent_bot_damage = process_damage(champ_map[opponent_bot]["damage"])
-            opponent_bot_role = process_role(champ_map[opponent_bot]["role"])
-
-            opponent_sup_type = process_type(champ_map[opponent_sup]["type"])
-            opponent_sup_damage = process_damage(champ_map[opponent_sup]["damage"])
-            opponent_sup_role = process_role(champ_map[opponent_sup]["role"])
+            opponent_sup_type = champ_map[opponent_sup]["type"]
+            opponent_sup_damage = champ_map[opponent_sup]["damage"]
+            opponent_sup_role = champ_map[opponent_sup]["role"]
 
             actual_data.append({
                 'champion': champion_name,
@@ -250,37 +250,3 @@ def model_item_data(engine):
                 'opponent_sup_role': opponent_sup_role,
             })
         return actual_data
-    
-def process_type(data):
-    if data == "melee":
-        return 0
-    elif data == "ranged":
-        return 1
-    else:
-        return 3
-
-def process_damage(data):
-    if data == "AD":
-        return 0
-    elif data == "AP":
-        return 1
-    else:
-        return 3
-    
-def process_role(data):
-    if data == "tank":
-        return 0
-    elif data == "bruiser":
-        return 1
-    elif data == "assassin":
-        return 2
-    elif data == "marksman":
-        return 3
-    elif data == "mage":
-        return 4
-    elif data == "support":
-        return 5
-    elif data == "enchanter":
-        return 6
-    else:
-        return 7

@@ -29,7 +29,13 @@ def fetch_rune(patch):
         for slot in tree['slots']:
             for rune in slot['runes']:
                 rune_mappings[rune['id']] = rune['name']
-    
+    rune_mappings[5005] = "Attack Speed"
+    rune_mappings[5008] = "Adaptive Force"
+    rune_mappings[5001] = "Health Growth"
+    rune_mappings[5011] = "Health"
+    rune_mappings[5007] = "Ability Haste"
+    rune_mappings[5010] = "Movement Speed"
+    rune_mappings[5013] = "Tenacity"
     return rune_mappings
 
 #fetches item mapping
@@ -369,9 +375,9 @@ def fetch_match_data(match_id, api_key, region):
                 bluetop_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluetop_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluetop_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluetop_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluetop_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 bluetop_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                bluetop_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                bluetop_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5)
             elif player['teamPosition'] == 'TOP' and player['teamId'] == 200:
@@ -389,9 +395,9 @@ def fetch_match_data(match_id, api_key, region):
                 redtop_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redtop_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redtop_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redtop_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redtop_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 redtop_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                redtop_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                redtop_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redtop_item0, redtop_item1, redtop_item2, redtop_item3, redtop_item4, redtop_item5)
             elif player['teamPosition'] == 'JUNGLE' and player['teamId'] == 100:
@@ -409,9 +415,9 @@ def fetch_match_data(match_id, api_key, region):
                 bluejg_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluejg_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluejg_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluejg_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluejg_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 bluejg_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                bluejg_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                bluejg_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluejg_item0, bluejg_item1, bluejg_item2, bluejg_item3, bluejg_item4, bluejg_item5)
             elif player['teamPosition'] == 'JUNGLE' and player['teamId'] == 200:
@@ -429,9 +435,9 @@ def fetch_match_data(match_id, api_key, region):
                 redjg_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redjg_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redjg_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redjg_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redjg_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 redjg_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                redjg_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                redjg_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redjg_item0, redjg_item1, redjg_item2, redjg_item3, redjg_item4, redjg_item5)
             elif player['teamPosition'] == 'MIDDLE' and player['teamId'] == 100:
@@ -449,9 +455,9 @@ def fetch_match_data(match_id, api_key, region):
                 bluemid_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluemid_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluemid_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluemid_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluemid_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 bluemid_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                bluemid_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                bluemid_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluemid_item0, bluemid_item1, bluemid_item2, bluemid_item3, bluemid_item4, bluemid_item5)
             elif player['teamPosition'] == 'MIDDLE' and player['teamId'] == 200:
@@ -469,9 +475,9 @@ def fetch_match_data(match_id, api_key, region):
                 redmid_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redmid_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redmid_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redmid_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redmid_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 redmid_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                redmid_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                redmid_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redmid_item0, redmid_item1, redmid_item2, redmid_item3, redmid_item4, redmid_item5)
             elif player['teamPosition'] == 'BOTTOM' and player['teamId'] == 100:
@@ -489,9 +495,9 @@ def fetch_match_data(match_id, api_key, region):
                 bluebot_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluebot_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluebot_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluebot_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluebot_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 bluebot_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                bluebot_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                bluebot_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluebot_item0, bluebot_item1, bluebot_item2, bluebot_item3, bluebot_item4, bluebot_item5)
             elif player['teamPosition'] == 'BOTTOM' and player['teamId'] == 200:
@@ -509,9 +515,9 @@ def fetch_match_data(match_id, api_key, region):
                 redbot_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redbot_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redbot_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redbot_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redbot_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 redbot_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                redbot_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                redbot_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redbot_item0, redbot_item1, redbot_item2, redbot_item3, redbot_item4, redbot_item5)
             elif player['teamPosition'] == 'UTILITY' and player['teamId'] == 100:
@@ -529,9 +535,9 @@ def fetch_match_data(match_id, api_key, region):
                 bluesup_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 bluesup_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 bluesup_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                bluesup_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                bluesup_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 bluesup_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                bluesup_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                bluesup_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5 = get_timeline(region, match_id, api_key, puuid, item_map, bluesup_item0, bluesup_item1, bluesup_item2, bluesup_item3, bluesup_item4, bluesup_item5)
             elif player['teamPosition'] == 'UTILITY' and player['teamId'] == 200:
@@ -549,9 +555,9 @@ def fetch_match_data(match_id, api_key, region):
                 redsup_rune3 = data['info']['participants'][count]['perks']['styles'][0]['selections'][3]['perk']
                 redsup_rune4 = data['info']['participants'][count]['perks']['styles'][1]['selections'][0]['perk']
                 redsup_rune5 = data['info']['participants'][count]['perks']['styles'][1]['selections'][1]['perk']
-                redsup_rune6 = data['info']['participants'][count]['perks']['statPerks']['defense']
+                redsup_rune8 = data['info']['participants'][count]['perks']['statPerks']['defense']
                 redsup_rune7 = data['info']['participants'][count]['perks']['statPerks']['flex']
-                redsup_rune8 = data['info']['participants'][count]['perks']['statPerks']['offense']
+                redsup_rune6 = data['info']['participants'][count]['perks']['statPerks']['offense']
                 puuid = data['info']['participants'][count]['puuid']
                 redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5 = get_timeline(region, match_id, api_key, puuid, item_map, redsup_item0, redsup_item1, redsup_item2, redsup_item3, redsup_item4, redsup_item5)
             else:
@@ -660,7 +666,7 @@ def insert_game(match_code, game_stamp, engine, game_duration, outcome, patch, i
                             :bluebot_id, :bluebot_champ, :bluebot_item0, :bluebot_item1, :bluebot_item2, :bluebot_item3, :bluebot_item4, :bluebot_item5, :bluebot_rune0, :bluebot_rune1, :bluebot_rune2, :bluebot_rune3, :bluebot_rune4, :bluebot_rune5, :bluebot_rune6, :bluebot_rune7, :bluebot_rune8,
                             :bluesup_id, :bluesup_champ, :bluesup_item0, :bluesup_item1, :bluesup_item2, :bluesup_item3, :bluesup_item4, :bluesup_item5, :bluesup_rune0, :bluesup_rune1, :bluesup_rune2, :bluesup_rune3, :bluesup_rune4, :bluesup_rune5, :bluesup_rune6, :bluesup_rune7, :bluesup_rune8,
                             :redtop_id, :redtop_champ, :redtop_item0, :redtop_item1, :redtop_item2, :redtop_item3, :redtop_item4, :redtop_item5, :redtop_rune0, :redtop_rune1, :redtop_rune2, :redtop_rune3, :redtop_rune4, :redtop_rune5, :redtop_rune6, :redtop_rune7, :redtop_rune8,
-                            :redjg_id, :redjg_champ, :redjg_item0, :redjg_item1, :redjg_item2, :redjg_item3, :redjg_item4, :redjg_item5, :redjg_rune0, :redjg_rune1, :redjg_rune2, :redjg_rune3, :redjg_rune4, :redjg_rune5, redjg_rune6, :redjg_rune7, :redjg_rune8,
+                            :redjg_id, :redjg_champ, :redjg_item0, :redjg_item1, :redjg_item2, :redjg_item3, :redjg_item4, :redjg_item5, :redjg_rune0, :redjg_rune1, :redjg_rune2, :redjg_rune3, :redjg_rune4, :redjg_rune5, :redjg_rune6, :redjg_rune7, :redjg_rune8,
                             :redmid_id, :redmid_champ, :redmid_item0, :redmid_item1, :redmid_item2, :redmid_item3, :redmid_item4, :redmid_item5, :redmid_rune0, :redmid_rune1, :redmid_rune2, :redmid_rune3, :redmid_rune4, :redmid_rune5, :redmid_rune6, :redmid_rune7, :redmid_rune8,
                             :redbot_id, :redbot_champ, :redbot_item0, :redbot_item1, :redbot_item2, :redbot_item3, :redbot_item4, :redbot_item5, :redbot_rune0, :redbot_rune1, :redbot_rune2, :redbot_rune3, :redbot_rune4, :redbot_rune5, :redbot_rune6, :redbot_rune7, :redbot_rune8,
                             :redsup_id, :redsup_champ, :redsup_item0, :redsup_item1, :redsup_item2, :redsup_item3, :redsup_item4, :redsup_item5, :redsup_rune0, :redsup_rune1, :redsup_rune2, :redsup_rune3, :redsup_rune4, :redsup_rune5, :redsup_rune6, :redsup_rune7, :redsup_rune8
