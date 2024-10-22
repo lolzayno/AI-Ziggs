@@ -26,48 +26,55 @@ import tensorflow as tf
 from tensorflow import keras
 
 def rune_model(data):
+    #Put data into correct form to be processed
     df = pd.DataFrame(data)
 
-    # One-hot encode categorical input features
+    #One-hot encode categorical input features
     df_encoded = pd.get_dummies(df, columns=['champion', 'champion_type', 'champion_damage', 'champion_role', 
                                              'lane', 'opponent_name', 'opponent_type', 'opponent_damage', 
                                              'opponent_role'])
 
-    # Prepare input features
-    x_data = df_encoded.drop(columns=['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5'])
-
+    #Prepare input features by dropping rune columns (rune0 to rune5)
+    x_data = df_encoded.drop(columns=['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5', 'rune6', 'rune7', 'rune8'])
     # Create a single column for rune pages
-    df['rune_page'] = df[['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5']].apply(lambda x: '-'.join(x), axis=1)
-    
-    # Encode the rune pages
+    df['rune_page'] = df[['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5','rune6', 'rune7', 'rune8']].apply(lambda x: '-'.join(x), axis=1)
+
+    #List of columns to exclude (rune0 to rune8)
+    rune_columns = ['rune0', 'rune1', 'rune2', 'rune3', 'rune4', 'rune5', 'rune6', 'rune7', 'rune8']
+
+    #Convert all columns except 'rune0' to 'rune8' to integers
+    x_data = df_encoded.drop(columns=rune_columns)  # Select non-rune columns
+    x_data = x_data.astype(int)  # Convert to integer
+
+    #Encode the rune pages into integer labels
     le = LabelEncoder()
     y_data = le.fit_transform(df['rune_page'])
-
-    # Split data into training and testing sets
+    #Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
 
-    # Build the neural network model
+    # Build the neural network model with explicit Input layer
     model = keras.Sequential([
-        keras.layers.Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
+        keras.layers.Input(shape=(X_train.shape[1],)),  #Use Input layer for defining the shape
+        keras.layers.Dense(128, activation='relu'),
         keras.layers.Dense(64, activation='relu'),
-        keras.layers.Dense(len(le.classes_), activation='softmax')  # Use softmax for multi-class
+        keras.layers.Dense(32, activation='relu'),
+        keras.layers.Dense(len(le.classes_), activation='softmax')  #Use softmax for multi-class classification
     ])
 
-    # Compile the model
+    #Compile the model
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-    # Train the model
-    model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
+    #Train the model
+    model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
 
-    # Evaluate the model
+    #Evaluate the model
     test_loss, test_accuracy = model.evaluate(X_test, y_test)
     print(f"Test accuracy: {test_accuracy:.3f}")
 
     return model, le, x_data.columns  # Return x_data.columns for use in predictions
 
-
 def predict_rune_page(model, le, new_data, x_columns):
-    # Convert new_data to DataFrame
+    #Convert new_data to DataFrame
     df_new = pd.DataFrame([new_data])
     
     # One-hot encode categorical input features
@@ -77,16 +84,21 @@ def predict_rune_page(model, le, new_data, x_columns):
                                                  'opponent_role'])
 
     # Ensure the new data has the same columns as the training data
-    for col in x_columns:  # Use the columns from the training set
-        if col not in df_encoded.columns:
-            df_encoded[col] = 0  # Fill missing columns with zeros
+    missing_cols = set(x_columns) - set(df_encoded.columns)
+    
+    # Create a dictionary for missing columns filled with zeros
+    missing_data = {col: [0] for col in missing_cols}  # Use list to match DataFrame structure
+
+    # Concatenate missing columns to the existing DataFrame
+    df_encoded = pd.concat([df_encoded, pd.DataFrame(missing_data)], axis=1)
 
     # Rearrange the columns to match the training input order
     df_encoded = df_encoded.reindex(columns=x_columns, fill_value=0)
-
+    # Convert to integers and then to float
+    df_encoded = df_encoded.astype(int)  # Convert boolean to int
+    x_input = df_encoded.values.astype(np.float32)  # Ensure input is float32
     # Prepare the input for prediction
     x_input = df_encoded.values
-
     # Make prediction
     predicted_class_index = model.predict(x_input)
     predicted_class_index = np.argmax(predicted_class_index, axis=1)  # Get the class with the highest probability
@@ -96,7 +108,8 @@ def predict_rune_page(model, le, new_data, x_columns):
 
     return predicted_rune_page
 
-def item_model(data, item_map):
+def item_model(data):
+
     # Create DataFrame from input data
     df = pd.DataFrame(data)
 
@@ -111,122 +124,137 @@ def item_model(data, item_map):
         'opponent_sup', 'opponent_sup_type', 'opponent_sup_damage', 'opponent_sup_role'
     ])
 
-    # Drop item columns for features
+    # Drop item columns for features (X data)
     x_data = df_encoded.drop(columns=['item0', 'item1', 'item2', 'item3', 'item4', 'item5'])
 
-    # Expand the data to make each item a separate row
-    expanded_data = []
-    for index, row in df.iterrows():
-        for item in ['item0', 'item1', 'item2', 'item3', 'item4', 'item5']:
-            current_item = row[item]
-            # Check if the current item is not None and if it is completed
-            if current_item is not None and current_item in item_map and item_map[current_item]['status'] == 'completed':
-                expanded_data.append(row.drop([item]).tolist() + [current_item])
+    # Initialize dictionary to hold individual models for each item
+    models = {}
     
-    # Check if expanded_data is empty
-    if not expanded_data:
-        raise ValueError("No completed items found for the provided data.")
+    # Loop through each item column (item0, item1, ..., item5)
+    for item_col in ['item0', 'item1', 'item2', 'item3', 'item4', 'item5']:
+        # Filter out rows where the current item is None
+        df_filtered = df[df[item_col].notna()]
 
-    # Create new DataFrame from expanded data
-    expanded_df = pd.DataFrame(expanded_data, columns=x_data.columns.tolist() + ['item'])
-    # Drop items that are not completed or None
-    expanded_df = expanded_df[expanded_df['item'].notnull()]
-    # Split data into features and target
-    x_data = expanded_df.drop(columns=['item'])
-    y_data = expanded_df['item']
-    y_data_encoded = pd.get_dummies(y_data)
-    # Split into training and testing sets
-    x_train, x_test, y_train, y_test = train_test_split(x_data, y_data_encoded, test_size=0.2, random_state=42)
+        # One-hot encode the filtered item column
+        y_data = pd.get_dummies(df_filtered[item_col])
 
-    # Create the model
-    model = Sequential()
-    model.add(keras.layers.Dense(128, activation='relu', input_shape=(x_train.shape[1],)))
-    model.add(keras.layers.Dense(64, activation='relu'))
-    model.add(keras.layers.Dense(len(y_data.unique()), activation='softmax'))  # Unique classes for the output layer
+        #Filter corresponding x_data (matching rows of the filtered df)
+        x_data_filtered = x_data.loc[df_filtered.index]
 
-    # Compile the model
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        # Split into training and testing sets
+        x_train, x_test, y_train, y_test = train_test_split(x_data_filtered, y_data, test_size=0.2, random_state=42)
 
-    # Train the model
-    model.fit(x_train, y_train, epochs=50, batch_size=10, validation_split=0.2)
+        # Build a model for this item slot
+        model = keras.Sequential([
+            keras.layers.Input(shape=(x_train.shape[1],)),
+            keras.layers.Dense(128, activation='relu'),
+            keras.layers.Dense(64, activation='relu'),
+            keras.layers.Dense(32, activation='relu'),
+            keras.layers.Dense(y_train.shape[1], activation='softmax')  # Use softmax for multi-class classification
+        ])
 
-    # Evaluate the model
-    loss, accuracy = model.evaluate(x_test, y_test)
-    print(f'Test Accuracy: {accuracy:.2f}')
+        # Compile the model
+        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    return model, x_data.columns
+        # Train the model
+        model.fit(x_train, y_train, epochs=50, batch_size=10, validation_split=0.2)
 
-# Prediction function
-def predict_items(model, new_data, item_map, x_data):
-    new_df = pd.DataFrame([new_data])
-    new_df_encoded = pd.get_dummies(new_df, columns=[...])  # One-hot encode like before
+        # Evaluate the model
+        loss, accuracy = model.evaluate(x_test, y_test)
+        print(f'Test Accuracy for {item_col}: {accuracy:.2f}')
+        
+        # Store the trained model
+        models[item_col] = model
 
-    # Ensure it has the same columns as the training data
-    new_df_encoded = new_df_encoded.reindex(columns=x_data.columns, fill_value=0)
+    return models, x_data.columns
 
-    predictions = model.predict(new_df_encoded)
+def predict_items(models, new_data, column_list):
 
-    # Convert predictions to items
-    predicted_items = []
-    for i in range(predictions.shape[1]):
-        predicted_item_index = np.argmax(predictions[:, i])
-        predicted_item = item_map[predicted_item_index]['name']
-        predicted_items.append(predicted_item)
+    # Convert new data to DataFrame
+    new_df = pd.DataFrame(new_data)
 
-    return predicted_items
+    # One-hot encode the input features (similar to training)
+    new_df_encoded = pd.get_dummies(new_df, columns=[
+        'champion', 'champion_type', 'champion_damage', 
+        'champion_role', 'lane', 
+        'opponent_top', 'opponent_top_type', 'opponent_top_damage', 'opponent_top_role', 
+        'opponent_jg', 'opponent_jg_type', 'opponent_jg_damage', 'opponent_jg_role', 
+        'opponent_mid', 'opponent_mid_type', 'opponent_mid_damage', 'opponent_mid_role', 
+        'opponent_bot', 'opponent_bot_type', 'opponent_bot_damage', 'opponent_bot_role', 
+        'opponent_sup', 'opponent_sup_type', 'opponent_sup_damage', 'opponent_sup_role'
+    ])
 
+    # Ensure the new_df_encoded has the same columns as the original training data
+    missing_cols = set(column_list) - set(new_df_encoded.columns)
+    for col in missing_cols:
+        new_df_encoded[col] = 0  # Add missing columns with 0s
+
+    # Reorder columns to match the original training data
+    new_df_encoded = new_df_encoded[column_list]
+
+    # Initialize dictionary to store predicted items
+    predictions = {}
+
+    # Loop through each item column and predict
+    for i, item_col in enumerate(['item0', 'item1', 'item2', 'item3', 'item4', 'item5']):
+        # Use the corresponding model to predict the item for this slot
+        prediction_prob = models[item_col].predict(new_df_encoded)
+
+        # Get the predicted item (highest probability)
+        predicted_item = prediction_prob.argmax(axis=1)  # Get the class with the highest probability
+        predictions[item_col] = predicted_item
+
+    return predictions
 if __name__ == '__main__':
     api_key = chatbot.get_json("API_KEY")
     engine = chatbot.establish_connection()
     patch = backend.fetch_patch()
     champion_map = backend.champ_map(patch)
     rune_map = backend.fetch_rune(patch)
-    item_map = backend.fetch_item(patch)
-    data_rune = rune.final_rune_data(engine)
-    models_rune, le = rune_model(data_rune)
-    model, le, x_columns = rune_model(data_rune)  # Get x_columns from the model training
-    new_data = {
-        'champion': 'Ziggs',
-        'champion_type': 'Ranged',
-        'champion_damage': 'AP',
-        'champion_role': 'Mage',
-        'lane': 'Mid',
-        'opponent_name': 'Leblanc',
-        'opponent_type': 'Ranged',
-        'opponent_damage': 'AP',
-        'opponent_role': 'Assassin',
-    }
+    item_map = backend.fetch_item_model(patch)
+    # data_rune = rune.final_rune_data(engine)
+    # model, le, x_columns = rune_model(data_rune)  # Get x_columns from the model training
+    # new_data = {
+    #     'champion': 'Ziggs',
+    #     'champion_type': 'ranged',
+    #     'champion_damage': 'AP',
+    #     'champion_role': 'mage',
+    #     'lane': 'mid',
+    #     'opponent_name': 'Syndra',
+    #     'opponent_type': 'ranged',
+    #     'opponent_damage': 'AP',
+    #     'opponent_role': 'mage',
+    # }
 
-    predicted_rune_page = predict_rune_page(model, le, new_data, x_columns)
-    print(f"Predicted Rune Page: {predicted_rune_page}")
-
-    data_item = item.model_item_data(engine)
-    models_item, x_data = item_model(data_item, item_map)
+    # predicted_rune_page = predict_rune_page(model, le, new_data, x_columns)
+    # print(f"Predicted Rune Page: {predicted_rune_page}")
+    data_item = item.model_item_data(engine, item_map)
+    models_item, x_data = item_model(data_item)
     new_data_item = {
         'champion': 'Ziggs',
-        'champion_type': 'Ranged',
+        'champion_type': 'ranged',
         'champion_damage': 'AP',
-        'champion_role': 'Mage',
-        'lane': 'Mid',
+        'champion_role': 'mage',
+        'lane': 'mid',
         'opponent_top': 'Camille',
-        'opponent_top_type': 'Melee',
+        'opponent_top_type': 'melee',
         'opponent_top_damage': 'AD',
-        'opponent_top_role': 'Bruiser',
+        'opponent_top_role': 'bruiser',
         'opponent_jg': 'Zac',
-        'opponent_jg_type': 'Melee',
+        'opponent_jg_type': 'melee',
         'opponent_jg_damage': 'AP',
-        'opponent_jg_role': 'Tank',
+        'opponent_jg_role': 'tank',
         'opponent_mid': 'Leblanc',
-        'opponent_mid_type': 'Ranged',
+        'opponent_mid_type': 'ranged',
         'opponent_mid_damage': 'AP',
-        'opponent_mid_role': 'Assassin',
+        'opponent_mid_role': 'assassin',
         'opponent_bot': 'Kaisa',
-        'opponent_bot_type': 'Ranged',
+        'opponent_bot_type': 'ranged',
         'opponent_bot_damage': 'AD/AP',
-        'opponent_bot_role': 'Marksman',
+        'opponent_bot_role': 'marksman',
         'opponent_sup': 'Rakan',
-        'opponent_sup_type': 'Melee',
+        'opponent_sup_type': 'melee',
         'opponent_sup_damage': 'AP',
-        'opponent_sup_role': 'Support'
+        'opponent_sup_role': 'support'
     }
-    item_prediction = predict_items(models_item, new_data_item, item_map, x_data)
+    item_prediction = predict_items(models_item, new_data_item, x_data)

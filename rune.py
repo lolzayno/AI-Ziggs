@@ -945,7 +945,7 @@ def final_rune_data(engine):
         bluetop_rune7 AS rune7_used,
         bluetop_rune8 AS rune8_used,
         redtop_champ AS opponent,
-        0 as lane
+        'top' as lane
     FROM highelo_matches
     UNION ALL
     SELECT
@@ -960,7 +960,7 @@ def final_rune_data(engine):
         bluejg_rune7 AS rune7_used,
         bluejg_rune8 AS rune8_used,
         redjg_champ AS opponent,
-        1 as lane
+        'jg' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -977,7 +977,7 @@ def final_rune_data(engine):
         bluemid_rune7 AS rune7_used,
         bluemid_rune8 AS rune8_used,
         redmid_champ AS opponent,
-        2 as lane
+        'mid' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -994,7 +994,7 @@ def final_rune_data(engine):
         bluebot_rune7 AS rune7_used,
         bluebot_rune8 AS rune8_used,
         redbot_champ AS opponent,
-        3 as lane
+        'bot' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1011,7 +1011,7 @@ def final_rune_data(engine):
         bluesup_rune7 AS rune7_used,
         bluesup_rune8 AS rune8_used,
         redsup_champ AS opponent,
-        4 as lane
+        'sup' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1028,7 +1028,7 @@ def final_rune_data(engine):
         redtop_rune7 AS rune7_used,
         redtop_rune8 AS rune8_used,
         bluetop_champ AS opponent,
-        0 as lane
+        'top' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1045,7 +1045,7 @@ def final_rune_data(engine):
         redjg_rune7 AS rune7_used,
         redjg_rune8 AS rune8_used,
         bluejg_champ AS opponent,
-        1 as lane
+        'jg' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1062,7 +1062,7 @@ def final_rune_data(engine):
         redmid_rune7 AS rune7_used,
         redmid_rune8 AS rune8_used,
         bluemid_champ AS opponent,
-        2 as lane
+        'mid' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1079,7 +1079,7 @@ def final_rune_data(engine):
         redbot_rune7 AS rune7_used,
         redbot_rune8 AS rune8_used,
         bluebot_champ AS opponent,
-        3 as lane
+        'bot' as lane
     FROM highelo_matches
 
     UNION ALL
@@ -1096,7 +1096,7 @@ def final_rune_data(engine):
         redsup_rune7 AS rune7_used,
         redsup_rune8 AS rune8_used,
         bluesup_champ AS opponent,
-        4 as lane
+        'sup' as lane
     FROM highelo_matches;
     """
     with engine.connect() as connection:
@@ -1108,72 +1108,13 @@ def final_rune_data(engine):
         for row in results:
             champion_name = row[0]
             champion_type = champ_map[champion_name]["type"]
-            if champion_type == "melee":
-                champion_type = 0
-            elif champion_type == "ranged":
-                champion_type = 1
-            else:
-                champion_type = 3
             champion_damage = champ_map[champion_name]["damage"]
-            if champion_damage == "AD":
-                champion_damage = 0
-            elif champion_damage == "AP":
-                champion_damage = 1
-            else:
-                champion_damage = 3
             champion_role = champ_map[champion_name]["role"]
-            if champion_role == "tank":
-                champion_role = 0
-            elif champion_role == "bruiser":
-                champion_role = 1
-            elif champion_role == "assassin":
-                champion_role = 2
-            elif champion_role == "marksman":
-                champion_role = 3
-            elif champion_role == "mage":
-                champion_role = 4
-            elif champion_role == "support":
-                champion_role = 5
-            elif champion_role == "enchanter":
-                champion_role = 6
-            else:
-                champion_role = 7
-            #rune_set = row[1]
-            #lane = row[3]
-            lane = row[10]
-            #opponent_name = row[2]
-            opponent_name = row[11]
+            lane = row[11]
+            opponent_name = row[10]
             opponent_type = champ_map[opponent_name]["type"]
-            if opponent_type == "melee":
-                opponent_type = 0
-            elif opponent_type == "ranged":
-                opponent_type = 1
-            else:
-                opponent_type = 3
             opponent_damage = champ_map[opponent_name]["damage"]
-            if opponent_damage == "AD":
-                opponent_damage = 0
-            elif opponent_damage == "AP":
-                opponent_damage = 1
-            else:
-                opponent_damage = 3
             opponent_role = champ_map[opponent_name]["role"]
-            if opponent_role == "tank":
-                opponent_role = 0
-            elif opponent_role == "bruiser":
-                opponent_role = 1
-            elif opponent_role == "assassin":
-                opponent_role = 2
-            elif opponent_role == "marksman":
-                opponent_role = 3
-            elif opponent_role == "mage":
-                opponent_role = 4
-            elif opponent_role == "support":
-                opponent_role = 5
-            elif opponent_role == "enchanter":
-                opponent_role = 6
-            else:
-                opponent_role = 7
             rune0 = row[1]
             rune1 = row[2]
             rune2 = row[3]
@@ -1218,11 +1159,11 @@ def champ_mapping():
     "Annie": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Aphelios": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Ashe": {"type": "ranged", "damage": "AD", "role": "marksman"},
-    "Aurelionsol": {"type": "ranged", "damage": "AP", "role": "mage"},
+    "AurelionSol": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Aurora": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Azir": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Bard": {"type": "ranged", "damage": "AP", "role": "support"},
-    "BelVeth": {"type": "melee", "damage": "AD", "role": "bruiser"},
+    "Belveth": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Blitzcrank": {"type": "melee", "damage": "AD", "role": "support"},
     "Brand": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Braum": {"type": "melee", "damage": "AD", "role": "support"},
@@ -1240,7 +1181,7 @@ def champ_mapping():
     "Elise": {"type": "ranged/melee", "damage": "AP", "role": "assassin"},
     "Evelynn": {"type": "melee", "damage": "AP", "role": "assassin"},
     "Ezreal": {"type": "ranged", "damage": "AD", "role": "marksman"},
-    "Fiddlesticks": {"type": "ranged", "damage": "AP", "role": "assassin"},
+    "FiddleSticks": {"type": "ranged", "damage": "AP", "role": "assassin"},
     "Fiora": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Fizz": {"type": "melee", "damage": "AP", "role": "assassin"},
     "Galio": {"type": "melee", "damage": "AP", "role": "mage"},
@@ -1271,13 +1212,13 @@ def champ_mapping():
     "Kayle": {"type": "ranged/melee", "damage": "AD/AP", "role": "marksman"},
     "Kayn": {"type": "melee", "damage": "AD", "role": "assassin/bruiser"},
     "Kennen": {"type": "ranged", "damage": "AP", "role": "mage"},
-    "KhaZix": {"type": "melee", "damage": "AD", "role": "assassin"},
+    "Khazix": {"type": "melee", "damage": "AD", "role": "assassin"},
     "Kindred": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Kled": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "KogMaw": {"type": "ranged", "damage": "AD/AP", "role": "marksman"},
     "KSante": {"type": "melee", "damage": "AD", "role": "tank"},
-    "LeBlanc": {"type": "ranged", "damage": "AP", "role": "assassin"},
-    "Leesin": {"type": "melee", "damage": "AD", "role": "bruiser"},
+    "Leblanc": {"type": "ranged", "damage": "AP", "role": "assassin"},
+    "LeeSin": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Leona": {"type": "melee", "damage": "AD", "role": "support"},
     "Lillia": {"type": "melee", "damage": "AP", "role": "bruiser"},
     "Lissandra": {"type": "ranged", "damage": "AP", "role": "mage"},
@@ -1287,9 +1228,9 @@ def champ_mapping():
     "Malphite": {"type": "melee", "damage": "AP", "role": "tank"},
     "Malzahar": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Maokai": {"type": "melee", "damage": "AP", "role": "tank"},
-    "Masteryi": {"type": "melee", "damage": "AD", "role": "bruiser"},
+    "MasterYi": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Milio": {"type": "ranged", "damage": "AP", "role": "enchanter"},
-    "Missfortune": {"type": "ranged", "damage": "AD", "role": "marksman"},
+    "MissFortune": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Mordekaiser": {"type": "melee", "damage": "AP", "role": "bruiser"},
     "Morgana": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Naafiri": {"type": "melee", "damage": "AD", "role": "assassin"},
@@ -1337,7 +1278,7 @@ def champ_mapping():
     "Swain": {"type": "ranged", "damage": "AP", "role": "bruiser"},
     "Sylas": {"type": "melee", "damage": "AP", "role": "bruiser"},
     "Syndra": {"type": "ranged", "damage": "AP", "role": "mage"},
-    "Tahmkench": {"type": "melee", "damage": "AD/AP", "role": "tank"},
+    "TahmKench": {"type": "melee", "damage": "AD/AP", "role": "tank"},
     "Taliyah": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Talon": {"type": "melee", "damage": "AD", "role": "assassin"},
     "Taric": {"type": "melee", "damage": "AP", "role": "support"},
@@ -1346,14 +1287,14 @@ def champ_mapping():
     "Tristana": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Trundle": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Tryndamere": {"type": "melee", "damage": "AD", "role": "bruiser"},
-    "Twistedfate": {"type": "ranged", "damage": "AP", "role": "mage"},
+    "TwistedFate": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Twitch": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Udyr": {"type": "melee", "damage": "AD/AP", "role": "bruiser"},
     "Urgot": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Varus": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Vayne": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Veigar": {"type": "ranged", "damage": "AP", "role": "mage"},
-    "VelKoz": {"type": "ranged", "damage": "AP", "role": "mage"},
+    "Velkoz": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Vex": {"type": "ranged", "damage": "AP", "role": "mage"},
     "Vi": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Viego": {"type": "melee", "damage": "AD", "role": "bruiser"},
@@ -1364,7 +1305,7 @@ def champ_mapping():
     "MonkeyKing": {"type": "melee", "damage": "AD", "role": "bruiser"},
     "Xayah": {"type": "ranged", "damage": "AD", "role": "marksman"},
     "Xerath": {"type": "ranged", "damage": "AP", "role": "mage"},
-    "Xinzhao": {"type": "ranged", "damage": "AD", "role": "bruiser"},
+    "XinZhao": {"type": "ranged", "damage": "AD", "role": "bruiser"},
     "Yasuo": {"type": "melee", "damage": "AD", "role": "marksman"},
     "Yone": {"type": "melee", "damage": "AD", "role": "marksman"},
     "Yorick": {"type": "melee", "damage": "AD", "role": "bruiser"},

@@ -59,6 +59,27 @@ def fetch_item(patch):
     
     return item_mapping
 
+def fetch_item_model(patch):
+    url = f"https://ddragon.leagueoflegends.com/cdn/{patch}/data/en_US/item.json"
+    response = requests.get(url)
+    item_data = response.json()
+
+    # Mapping item name to a dictionary with 'item_id', 'status', and 'gold' (total cost)
+    item_mapping = {
+        item_info['name']: {
+            'item_id': int(item_id),  # Include item_id for reference
+            'status': 'completed' if 'into' not in item_info else 'component',
+            'gold': item_info['gold']['total']  # Get the total gold cost
+        } 
+        for item_id, item_info in item_data['data'].items()
+    }
+
+    # Map 'None' to a dictionary with status 'none' and gold cost of 0
+    item_mapping['None'] = {'item_id': 0, 'status': 'none', 'gold': 0}
+    item_mapping['Blasting Wand']['status'] = 'component'
+    item_mapping['Needlessly Large Rod']['status'] = 'component'
+    return item_mapping
+
 def champ_map(patch):
     url = f'https://ddragon.leagueoflegends.com/cdn/{patch}/data/en_US/champion.json'
     response = requests.get(url)

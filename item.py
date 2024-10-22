@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 from collections import defaultdict
 import rune
-def model_item_data(engine):
+def model_item_data(engine, item_map):
     sql = """
         -- Top lane matchups
         SELECT
@@ -17,7 +17,7 @@ def model_item_data(engine):
         redmid_champ AS opponent2,
         redbot_champ AS opponent3,
         redsup_champ AS opponent4,
-        0 AS lane
+        'top' AS lane
         FROM highelo_matches
         UNION ALL
         SELECT
@@ -33,7 +33,7 @@ def model_item_data(engine):
         bluemid_champ AS opponent2,
         bluebot_champ AS opponent3,
         bluesup_champ AS opponent4,
-        0 AS lane
+        'top' AS lane
         FROM highelo_matches
         UNION ALL
 
@@ -51,7 +51,7 @@ def model_item_data(engine):
         redmid_champ AS opponent2,
         redbot_champ AS opponent3,
         redsup_champ AS opponent4,
-        1 AS lane
+        'jg' AS lane
         FROM highelo_matches
         UNION ALL
         SELECT
@@ -67,7 +67,7 @@ def model_item_data(engine):
         bluemid_champ AS opponent2,
         bluebot_champ AS opponent3,
         bluesup_champ AS opponent4,
-        1 AS lane
+        'jg' AS lane
         FROM highelo_matches
         UNION ALL
 
@@ -85,7 +85,7 @@ def model_item_data(engine):
         redmid_champ AS opponent2,
         redbot_champ AS opponent3,
         redsup_champ AS opponent4,
-        2 AS lane
+        'mid' AS lane
         FROM highelo_matches
         UNION ALL
         SELECT
@@ -101,7 +101,7 @@ def model_item_data(engine):
         bluemid_champ AS opponent2,
         bluebot_champ AS opponent3,
         bluesup_champ AS opponent4,
-        2 AS lane
+        'mid' AS lane
         FROM highelo_matches
         UNION ALL
 
@@ -119,7 +119,7 @@ def model_item_data(engine):
         redmid_champ AS opponent2,
         redbot_champ AS opponent3,
         redsup_champ AS opponent4,
-        3 AS lane
+        'bot' AS lane
         FROM highelo_matches
         UNION ALL
         SELECT
@@ -135,7 +135,7 @@ def model_item_data(engine):
         bluemid_champ AS opponent2,
         bluebot_champ AS opponent3,
         bluesup_champ AS opponent4,
-        3 AS lane
+        'bot' AS lane
         FROM highelo_matches
         UNION ALL
 
@@ -153,7 +153,7 @@ def model_item_data(engine):
         redmid_champ AS opponent2,
         redbot_champ AS opponent3,
         redsup_champ AS opponent4,
-        4 AS lane
+        'sup' AS lane
         FROM highelo_matches
         UNION ALL
         SELECT
@@ -169,7 +169,7 @@ def model_item_data(engine):
         bluemid_champ AS opponent2,
         bluebot_champ AS opponent3,
         bluesup_champ AS opponent4,
-        4 AS lane
+        'sup' AS lane
         FROM highelo_matches;
     """
     with engine.connect() as connection:
@@ -221,12 +221,12 @@ def model_item_data(engine):
                 'champion_type': champion_type,
                 'champion_damage': champion_damage,
                 'champion_role': champion_role,
-                'item0': item0,
-                'item1': item1,
-                'item2': item2,
-                'item3': item3,
-                'item4': item4,
-                'item5': item5,
+                'item0': item0 if item0 is not None and item_map[item0]['status'] == 'completed' and item_map[item0]['gold'] > 900 else None,
+                'item1': item1 if item1 is not None and item_map[item1]['status'] == 'completed' and item_map[item1]['gold'] > 900 else None,
+                'item2': item2 if item2 is not None and item_map[item2]['status'] == 'completed' and item_map[item2]['gold'] > 900 else None,
+                'item3': item3 if item3 is not None and item_map[item3]['status'] == 'completed' and item_map[item3]['gold'] > 900 else None,
+                'item4': item4 if item4 is not None and item_map[item4]['status'] == 'completed' and item_map[item4]['gold'] > 900 else None,
+                'item5': item5 if item5 is not None and item_map[item5]['status'] == 'completed' and item_map[item5]['gold'] > 900 else None,
                 'lane': lane,
                 'opponent_top': opponent_top,
                 'opponent_top_type': opponent_top_type,
