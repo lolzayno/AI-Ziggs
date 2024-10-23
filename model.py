@@ -65,7 +65,7 @@ def rune_model(data):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     #Train the model
-    model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
+    model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
 
     #Evaluate the model
     test_loss, test_accuracy = model.evaluate(X_test, y_test)
@@ -186,7 +186,7 @@ def predict_items(models, new_data, column_list, item_classes):
         'opponent_sup', 'opponent_sup_type', 'opponent_sup_damage', 'opponent_sup_role'
     ])
 
-    # Ensure the new_df_encoded has the same columns as the original training data
+    #Ensure the new_df_encoded has the same columns as the original training data
     missing_cols = set(column_list) - set(new_df_encoded.columns)
 
     # Create a DataFrame for missing columns filled with zeros
@@ -218,8 +218,6 @@ def predict_items(models, new_data, column_list, item_classes):
         predictions[item_col] = predicted_items
 
     return predictions
-
-
 
 if __name__ == '__main__':
     api_key = chatbot.get_json("API_KEY")

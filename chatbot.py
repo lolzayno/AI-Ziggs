@@ -105,21 +105,13 @@ def spectate_game(region, puuid, api_key):
                 }
     return opponents
 if __name__ == '__main__':
+    #item prediction output: {'item0': ["Mercury's Treads"], 'item1': ['Stormsurge'], 'item2': ['Horizon Focus'], 'item3': ["Rabadon's Deathcap"], 'item4': ['Void Staff'], 'item5': ["Banshee's Veil"]}
+    #rune prediction output: Predicted Rune Page: ['Arcane Comet-Manaflow Band-Transcendence-Scorch-Presence of Mind-Cut Down-Adaptive Force-Adaptive Force-Health Growth']
     api_key = get_json("API_KEY")
-    #item_map = backend.fetch_item("14.20.1")
     engine = establish_connection()
-    rune.model_rune_data(engine)
-    # print("Most used rune against Specific champ")
-    # print(rune.get_rune_opponent(engine, "Ziggs", "Zeri"))
-    # print("Most used rune as Specific Champ")
-    # print(rune.get_rune_all(engine, "Ziggs"))
-    # print("Most used rune in specific lane and opponent")
-    # print(rune.get_rune_specific(engine, "Ziggs", "Zeri", "bot"))
-    # print("Most used rune as a champ in specific lane")
-    # print(rune.get_rune(engine, "Ziggs", "mid"))
-    # openai.api_key = get_json("openai_key")
-    # memory_messages = []
-    # while True:
-    #     user_input = input("You: ")  # Get user input from the console
-    #     response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
-    #     print(f"Chatbot: {response}")  # Print the chatbot's response
+    openai.api_key = get_json("openai_key")
+    memory_messages = []
+    while True:
+        user_input = input("You: ")  # Get user input from the console
+        response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
+        print(f"Chatbot: {response}")  # Print the chatbot's response
