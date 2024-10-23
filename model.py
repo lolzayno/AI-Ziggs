@@ -2,6 +2,7 @@ import sklearn
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import chatbot
+import pickle
 import rune
 import backend
 import requests
@@ -70,8 +71,18 @@ def rune_model(data):
     #Evaluate the model
     test_loss, test_accuracy = model.evaluate(X_test, y_test)
     print(f"Test accuracy: {test_accuracy:.3f}")
+    # Save model and label encoder
+    model.save('models/rune_model.keras')  # Save the model in native Keras format
+    with open('models/label_encoder.pkl', 'wb') as le_file:
+        pickle.dump(le, le_file)
 
     return model, le, x_data.columns  # Return x_data.columns for use in predictions
+
+def load_model():
+    model = keras.models.load_model('models/rune_model.keras')  # Load the model
+    with open('models/label_encoder.pkl', 'rb') as le_file:
+        le = pickle.load(le_file)  # Load the label encoder
+    return model, le
 
 def predict_rune_page(model, le, new_data, x_columns):
     #Convert new_data to DataFrame
@@ -226,50 +237,50 @@ if __name__ == '__main__':
     champion_map = backend.champ_map(patch)
     rune_map = backend.fetch_rune(patch)
     item_map = backend.fetch_item_model(patch)
-    # data_rune = rune.final_rune_data(engine)
-    # model, le, x_columns = rune_model(data_rune)  # Get x_columns from the model training
-    # new_data = {
-    #     'champion': 'Ziggs',
-    #     'champion_type': 'ranged',
-    #     'champion_damage': 'AP',
-    #     'champion_role': 'mage',
-    #     'lane': 'mid',
-    #     'opponent_name': 'Syndra',
-    #     'opponent_type': 'ranged',
-    #     'opponent_damage': 'AP',
-    #     'opponent_role': 'mage',
-    # }
-
-    # predicted_rune_page = predict_rune_page(model, le, new_data, x_columns)
-    # print(f"Predicted Rune Page: {predicted_rune_page}")
-    data_item = item.model_item_data(engine, item_map)
-    models_item, x_data, item_class = item_model(data_item)
-    new_data_item = [{
+    data_rune = rune.final_rune_data(engine)
+    model, le, x_columns = rune_model(data_rune)  # Get x_columns from the model training
+    new_data = {
         'champion': 'Ziggs',
         'champion_type': 'ranged',
         'champion_damage': 'AP',
         'champion_role': 'mage',
         'lane': 'mid',
-        'opponent_top': 'Camille',
-        'opponent_top_type': 'melee',
-        'opponent_top_damage': 'AD',
-        'opponent_top_role': 'bruiser',
-        'opponent_jg': 'Zac',
-        'opponent_jg_type': 'melee',
-        'opponent_jg_damage': 'AP',
-        'opponent_jg_role': 'tank',
-        'opponent_mid': 'Leblanc',
-        'opponent_mid_type': 'ranged',
-        'opponent_mid_damage': 'AP',
-        'opponent_mid_role': 'assassin',
-        'opponent_bot': 'Kaisa',
-        'opponent_bot_type': 'ranged',
-        'opponent_bot_damage': 'AD/AP',
-        'opponent_bot_role': 'marksman',
-        'opponent_sup': 'Rakan',
-        'opponent_sup_type': 'melee',
-        'opponent_sup_damage': 'AP',
-        'opponent_sup_role': 'support'
-    }]
-    item_prediction = predict_items(models_item, new_data_item, x_data, item_class)
-    print(item_prediction)
+        'opponent_name': 'Syndra',
+        'opponent_type': 'ranged',
+        'opponent_damage': 'AP',
+        'opponent_role': 'mage',
+    }
+
+    predicted_rune_page = predict_rune_page(model, le, new_data, x_columns)
+    print(f"Predicted Rune Page: {predicted_rune_page}")
+    # data_item = item.model_item_data(engine, item_map)
+    # models_item, x_data, item_class = item_model(data_item)
+    # new_data_item = [{
+    #     'champion': 'Ziggs',
+    #     'champion_type': 'ranged',
+    #     'champion_damage': 'AP',
+    #     'champion_role': 'mage',
+    #     'lane': 'mid',
+    #     'opponent_top': 'Camille',
+    #     'opponent_top_type': 'melee',
+    #     'opponent_top_damage': 'AD',
+    #     'opponent_top_role': 'bruiser',
+    #     'opponent_jg': 'Zac',
+    #     'opponent_jg_type': 'melee',
+    #     'opponent_jg_damage': 'AP',
+    #     'opponent_jg_role': 'tank',
+    #     'opponent_mid': 'Leblanc',
+    #     'opponent_mid_type': 'ranged',
+    #     'opponent_mid_damage': 'AP',
+    #     'opponent_mid_role': 'assassin',
+    #     'opponent_bot': 'Kaisa',
+    #     'opponent_bot_type': 'ranged',
+    #     'opponent_bot_damage': 'AD/AP',
+    #     'opponent_bot_role': 'marksman',
+    #     'opponent_sup': 'Rakan',
+    #     'opponent_sup_type': 'melee',
+    #     'opponent_sup_damage': 'AP',
+    #     'opponent_sup_role': 'support'
+    # }]
+    # item_prediction = predict_items(models_item, new_data_item, x_data, item_class)
+    # print(item_prediction)
