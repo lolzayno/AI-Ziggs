@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, text
 from collections import defaultdict
 import rune
+import numpy as np
 def model_item_data(engine, item_map):
     sql = """
         -- Top lane matchups
@@ -221,12 +222,12 @@ def model_item_data(engine, item_map):
                 'champion_type': champion_type,
                 'champion_damage': champion_damage,
                 'champion_role': champion_role,
-                'item0': item0 if item0 is not None and item_map[item0]['status'] == 'completed' and item_map[item0]['gold'] > 900 else None,
-                'item1': item1 if item1 is not None and item_map[item1]['status'] == 'completed' and item_map[item1]['gold'] > 900 else None,
-                'item2': item2 if item2 is not None and item_map[item2]['status'] == 'completed' and item_map[item2]['gold'] > 900 else None,
-                'item3': item3 if item3 is not None and item_map[item3]['status'] == 'completed' and item_map[item3]['gold'] > 900 else None,
-                'item4': item4 if item4 is not None and item_map[item4]['status'] == 'completed' and item_map[item4]['gold'] > 900 else None,
-                'item5': item5 if item5 is not None and item_map[item5]['status'] == 'completed' and item_map[item5]['gold'] > 900 else None,
+                'item0': item0 if item0 is not None and item_map[item0]['status'] == 'completed' and item_map[item0]['gold'] > 900 else np.nan,
+                'item1': item1 if item1 is not None and item_map[item1]['status'] == 'completed' and item_map[item1]['gold'] > 900 else np.nan,
+                'item2': item2 if item2 is not None and item_map[item2]['status'] == 'completed' and item_map[item2]['gold'] > 900 else np.nan,
+                'item3': item3 if item3 is not None and item_map[item3]['status'] == 'completed' and item_map[item3]['gold'] > 900 else np.nan,
+                'item4': item4 if item4 is not None and item_map[item4]['status'] == 'completed' and item_map[item4]['gold'] > 900 else np.nan,
+                'item5': item5 if item5 is not None and item_map[item5]['status'] == 'completed' and item_map[item5]['gold'] > 900 else np.nan,
                 'lane': lane,
                 'opponent_top': opponent_top,
                 'opponent_top_type': opponent_top_type,

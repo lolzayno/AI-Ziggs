@@ -129,14 +129,17 @@ def item_model(data):
 
     # Initialize dictionary to hold individual models for each item
     models = {}
-    
+    item_classes = {}  # To store the unique item names for each item column
+
     # Loop through each item column (item0, item1, ..., item5)
-    for item_col in ['item0', 'item1', 'item2', 'item3', 'item4', 'item5']:
+    for item_col in ['item0', 'item1', 'item2', 'item3','item4', 'item5']:
         # Filter out rows where the current item is None
         df_filtered = df[df[item_col].notna()]
-
         # One-hot encode the filtered item column
         y_data = pd.get_dummies(df_filtered[item_col])
+
+        # Store the unique item names for mapping later
+        item_classes[item_col] = y_data.columns.tolist()
 
         #Filter corresponding x_data (matching rows of the filtered df)
         x_data_filtered = x_data.loc[df_filtered.index]
@@ -166,10 +169,9 @@ def item_model(data):
         # Store the trained model
         models[item_col] = model
 
-    return models, x_data.columns
+    return models, x_data.columns, item_classes
 
-def predict_items(models, new_data, column_list):
-
+def predict_items(models, new_data, column_list, item_classes):
     # Convert new data to DataFrame
     new_df = pd.DataFrame(new_data)
 
@@ -186,25 +188,39 @@ def predict_items(models, new_data, column_list):
 
     # Ensure the new_df_encoded has the same columns as the original training data
     missing_cols = set(column_list) - set(new_df_encoded.columns)
-    for col in missing_cols:
-        new_df_encoded[col] = 0  # Add missing columns with 0s
 
-    # Reorder columns to match the original training data
-    new_df_encoded = new_df_encoded[column_list]
+    # Create a DataFrame for missing columns filled with zeros
+    if missing_cols:
+        missing_data = pd.DataFrame(0, index=np.arange(len(new_df_encoded)), columns=list(missing_cols))  # Convert set to list
+        # Concatenate missing columns to the existing DataFrame
+        new_df_encoded = pd.concat([new_df_encoded, missing_data], axis=1)
+
+    # Rearrange the columns to match the training input order
+    df_encoded = new_df_encoded.reindex(columns=column_list, fill_value=0)
+
+    # Convert to integers and then to float
+    df_encoded = df_encoded.astype(int)  # Convert boolean to int
+    df_encoded = df_encoded.values.astype(np.float32)  # Ensure input is float32
 
     # Initialize dictionary to store predicted items
     predictions = {}
 
     # Loop through each item column and predict
-    for i, item_col in enumerate(['item0', 'item1', 'item2', 'item3', 'item4', 'item5']):
+    for item_col in ['item0', 'item1', 'item2', 'item3','item4', 'item5']:
         # Use the corresponding model to predict the item for this slot
-        prediction_prob = models[item_col].predict(new_df_encoded)
+        prediction_prob = models[item_col].predict(df_encoded)
 
         # Get the predicted item (highest probability)
         predicted_item = prediction_prob.argmax(axis=1)  # Get the class with the highest probability
-        predictions[item_col] = predicted_item
+        # Map indices back to actual item names
+        predicted_items = [item_classes[item_col][index] for index in predicted_item]
+        
+        predictions[item_col] = predicted_items
 
     return predictions
+
+
+
 if __name__ == '__main__':
     api_key = chatbot.get_json("API_KEY")
     engine = chatbot.establish_connection()
@@ -229,8 +245,8 @@ if __name__ == '__main__':
     # predicted_rune_page = predict_rune_page(model, le, new_data, x_columns)
     # print(f"Predicted Rune Page: {predicted_rune_page}")
     data_item = item.model_item_data(engine, item_map)
-    models_item, x_data = item_model(data_item)
-    new_data_item = {
+    models_item, x_data, item_class = item_model(data_item)
+    new_data_item = [{
         'champion': 'Ziggs',
         'champion_type': 'ranged',
         'champion_damage': 'AP',
@@ -256,5 +272,6 @@ if __name__ == '__main__':
         'opponent_sup_type': 'melee',
         'opponent_sup_damage': 'AP',
         'opponent_sup_role': 'support'
-    }
-    item_prediction = predict_items(models_item, new_data_item, x_data)
+    }]
+    item_prediction = predict_items(models_item, new_data_item, x_data, item_class)
+    print(item_prediction)
