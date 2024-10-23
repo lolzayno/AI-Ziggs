@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, text
 import rune
 import requests
 import backend
+import model
 def establish_connection():
     engine = create_engine(f'mysql+mysqlconnector://{get_json("user")}:{get_json("host_pw")}@{get_json("host_host")}/{get_json("database")}')
     try:
@@ -49,29 +50,6 @@ def get_chatbot_response(user_input, messages):
             else:
                 return "Sorry, I couldn't get a response."
 
-#fetches all matches of a specific champ
-def get_match(engine, champ):
-    sql = """
-    SELECT * FROM highelo_matches
-    WHERE bluetop_champ = :champ
-    OR bluejg_champ = :champ
-    OR bluemid_champ = :champ
-    OR bluebot_champ = :champ
-    OR bluesup_champ = :champ
-    OR redtop_champ = :champ
-    OR redjg_champ = :champ
-    OR redmid_champ = :champ
-    OR redbot_champ = :champ
-    OR redsup_champ = :champ
-    """
-    with engine.connect() as connection:
-        result = connection.execute(text(sql), {
-            "champ": champ
-        })
-        rows = result.fetchall()
-        processed_rows = [list(row[3:]) for row in rows]
-        return processed_rows
-
 def fetch_puuid(region, ign, tag, api_key):
     if region in ['BR1', 'LA1', 'LA2', 'NA1', 'OC1']:
         region = 'americas'
@@ -109,9 +87,80 @@ if __name__ == '__main__':
     #rune prediction output: Predicted Rune Page: ['Arcane Comet-Manaflow Band-Transcendence-Scorch-Presence of Mind-Cut Down-Adaptive Force-Adaptive Force-Health Growth']
     api_key = get_json("API_KEY")
     engine = establish_connection()
+    champion_map = rune.champ_mapping()
     openai.api_key = get_json("openai_key")
     memory_messages = []
+    rune_select = None
+    print("Welcome to the League of Legends Rune Advisor! Ask about the best rune set.")
     while True:
         user_input = input("You: ")  # Get user input from the console
-        response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
-        print(f"Chatbot: {response}")  # Print the chatbot's response
+        try:
+            if rune_select:
+                champion, opponent = user_input.split(" against ")
+                champion = champion.capitalize()
+                opponent = opponent.capitalize()
+                new_data = {
+                    'champion': champion,
+                    'champion_type': champion_map[champion]['type'],
+                    'champion_damage': champion_map[champion]['damage'],
+                    'champion_role': champion_map[champion]['role'],
+                    'lane': 'mid',
+                    'opponent_name': opponent,
+                    'opponent_type': champion_map[opponent]['type'],
+                    'opponent_damage': champion_map[opponent]['damage'],
+                    'opponent_role': champion_map[opponent]['role']
+                }
+                model_rune, le, feature_columns = model.load_rune_model()
+                predicted_rune_page = model.predict_rune_page(model_rune, le, new_data, feature_columns)
+                predicted_rune_page = predicted_rune_page[0].split('-')
+                lane = 'mid'
+                user_input = f"Please explain to this user who just requested a rune set for {champion} laning against {opponent} in the {lane} lane using this list of runes {predicted_rune_page}"
+                response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
+                print(f"Chatbot: {response}")  # Print the chatbot's response
+            else:
+                champion, opponent = user_input.split(" against ")
+                champion = champion.capitalize()
+                opponent = opponent.split(',')
+                opponent_top = opponent[0]
+                opponent_jg = opponent[1]
+                opponent_mid = opponent[2]
+                opponent_bot = opponent[3]
+                opponent_sup = opponent[4]
+                new_data_item = [{
+                    'champion': champion,
+                    'champion_type': champion_map[champion]['type'],
+                    'champion_damage': champion_map[champion]['damage'],
+                    'champion_role': champion_map[champion]['role'],
+                    'lane': 'mid',
+                    'opponent_top': opponent_top,
+                    'opponent_top_type': champion_map[opponent_top]['type'],
+                    'opponent_top_damage': champion_map[opponent_top]['damage'],
+                    'opponent_top_role': champion_map[opponent_top]['role'],
+                    'opponent_jg': opponent_jg,
+                    'opponent_jg_type': champion_map[opponent_jg]['type'],
+                    'opponent_jg_damage': champion_map[opponent_jg]['damage'],
+                    'opponent_jg_role': champion_map[opponent_jg]['role'],
+                    'opponent_mid': opponent_mid,
+                    'opponent_mid_type': champion_map[opponent_mid]['type'],
+                    'opponent_mid_damage': champion_map[opponent_mid]['damage'],
+                    'opponent_mid_role': champion_map[opponent_mid]['role'],
+                    'opponent_bot': opponent_bot,
+                    'opponent_bot_type': champion_map[opponent_bot]['type'],
+                    'opponent_bot_damage': champion_map[opponent_bot]['damage'],
+                    'opponent_bot_role': champion_map[opponent_bot]['role'],
+                    'opponent_sup': opponent_sup,
+                    'opponent_sup_type': champion_map[opponent_sup]['type'],
+                    'opponent_sup_damage': champion_map[opponent_sup]['damage'],
+                    'opponent_sup_role': champion_map[opponent_sup]['role']
+                }]
+                lane = 'mid'
+                models, x_columns, item_classes = model.load_item_model()
+                item_prediction = model.predict_items(models, new_data_item, x_columns, item_classes)
+                items_list = []
+                for items in item_prediction:
+                    items_list.append(item_prediction[items][0])
+                user_input = f"Please explain to this user who just requested a item set for {champion} in the {lane} lane,  going against {opponent_top} in top lane, {opponent_jg} in the jungle, {opponent_mid} in the mid lane, {opponent_bot} in the bot lane, and {opponent_sup} as the support using this list of items {items_list}"
+                response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
+                print(f"Chatbot: {response}")
+        except ValueError:
+            response_message = "Please provide input in the format: 'What is the best rune set for [champion] against [opponent]?'"
