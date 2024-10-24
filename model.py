@@ -273,6 +273,7 @@ if __name__ == '__main__':
     champion_map = backend.champ_map(patch)
     rune_map = backend.fetch_rune(patch)
     item_map = backend.fetch_item_model(patch)
+    print(champion_map)
     # data_rune = rune.final_rune_data(engine)
     # model, le, x_columns = rune_model(data_rune)  # Get x_columns from the model training
     # new_data = {
@@ -291,34 +292,34 @@ if __name__ == '__main__':
     # print(f"Predicted Rune Page: {predicted_rune_page}")
     # data_item = item.model_item_data(engine, item_map)
     # models_item, x_data, item_class = item_model(data_item)
-    models, x_columns, item_classes = load_item_model()
-    new_data_item = [{
-        'champion': 'Ziggs',
-        'champion_type': 'ranged',
-        'champion_damage': 'AP',
-        'champion_role': 'mage',
-        'lane': 'mid',
-        'opponent_top': 'Camille',
-        'opponent_top_type': 'melee',
-        'opponent_top_damage': 'AD',
-        'opponent_top_role': 'bruiser',
-        'opponent_jg': 'Zac',
-        'opponent_jg_type': 'melee',
-        'opponent_jg_damage': 'AP',
-        'opponent_jg_role': 'tank',
-        'opponent_mid': 'Leblanc',
-        'opponent_mid_type': 'ranged',
-        'opponent_mid_damage': 'AP',
-        'opponent_mid_role': 'assassin',
-        'opponent_bot': 'Kaisa',
-        'opponent_bot_type': 'ranged',
-        'opponent_bot_damage': 'AD/AP',
-        'opponent_bot_role': 'marksman',
-        'opponent_sup': 'Rakan',
-        'opponent_sup_type': 'melee',
-        'opponent_sup_damage': 'AP',
-        'opponent_sup_role': 'support'
-    }]
-    item_prediction = predict_items(models, new_data_item, x_columns, item_classes)
-    for items in item_prediction:
-        print(item_prediction[items])
+    # models, x_columns, item_classes = load_item_model()
+    # new_data_item = [{
+    #     'champion': 'Ziggs',
+    #     'champion_type': 'ranged',
+    #     'champion_damage': 'AP',
+    #     'champion_role': 'mage',
+    #     'lane': 'mid',
+    #     'opponent_top': 'Camille',
+    #     'opponent_top_type': 'melee',
+    #     'opponent_top_damage': 'AD',
+    #     'opponent_top_role': 'bruiser',
+    #     'opponent_jg': 'Zac',
+    #     'opponent_jg_type': 'melee',
+    #     'opponent_jg_damage': 'AP',
+    #     'opponent_jg_role': 'tank',
+    #     'opponent_mid': 'Leblanc',
+    #     'opponent_mid_type': 'ranged',
+    #     'opponent_mid_damage': 'AP',
+    #     'opponent_mid_role': 'assassin',
+    #     'opponent_bot': 'Kaisa',
+    #     'opponent_bot_type': 'ranged',
+    #     'opponent_bot_damage': 'AD/AP',
+    #     'opponent_bot_role': 'marksman',
+    #     'opponent_sup': 'Rakan',
+    #     'opponent_sup_type': 'melee',
+    #     'opponent_sup_damage': 'AP',
+    #     'opponent_sup_role': 'support'
+    # }]
+    # item_prediction = predict_items(models, new_data_item, x_columns, item_classes)
+    # for items in item_prediction:
+    #     print(item_prediction[items])

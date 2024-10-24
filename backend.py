@@ -80,6 +80,7 @@ def fetch_item_model(patch):
     item_mapping['Needlessly Large Rod']['status'] = 'component'
     item_mapping['B. F. Sword']['status'] = 'component'
     item_mapping['Maw of Malmortius']['status'] = 'component'
+    item_mapping["Mejai's Soulstealer"]['status'] = 'component'
     return item_mapping
 
 def champ_map(patch):
