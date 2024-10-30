@@ -591,7 +591,7 @@ def fetch_match_data(match_id, api_key, region):
             return None
         except Exception as e:
             print(f"An error occurred: {e}. Skipping match.")
-            return None    
+            return None
     return (timestamp, gameduration, result,
         # Blue Top
         bluetop_id, bluetop_champ, bluetop_item0, bluetop_item1, bluetop_item2, bluetop_item3, bluetop_item4, bluetop_item5, bluetop_rune0, bluetop_rune1, bluetop_rune2, bluetop_rune3, bluetop_rune4, bluetop_rune5, bluetop_rune6, bluetop_rune7, bluetop_rune8,
