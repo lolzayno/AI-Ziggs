@@ -95,7 +95,7 @@ if __name__ == '__main__':
     while True:
         user_input = input("You: ")  # Get user input from the console
         try:
-            if rune_select:
+            if rune_select == 1:
                 champion, opponent = user_input.split(" against ")
                 champion = champion.capitalize()
                 opponent = opponent.capitalize()
@@ -110,6 +110,7 @@ if __name__ == '__main__':
                     'opponent_damage': champion_map[opponent]['damage'],
                     'opponent_role': champion_map[opponent]['role']
                 }
+                print(new_data)
                 model_rune, le, feature_columns = model.load_rune_model()
                 predicted_rune_page = model.predict_rune_page(model_rune, le, new_data, feature_columns)
                 predicted_rune_page = predicted_rune_page[0].split('-')
@@ -159,7 +160,7 @@ if __name__ == '__main__':
                 items_list = []
                 for items in item_prediction:
                     items_list.append(item_prediction[items][0])
-                user_input = f"Please explain to this user who just requested a item set for {champion} in the {lane} lane,  going against {opponent_top} in top lane, {opponent_jg} in the jungle, {opponent_mid} in the mid lane, {opponent_bot} in the bot lane, and {opponent_sup} as the support using this list of items {items_list}"
+                user_input = f"Please explain to this user who just requested a item set for {champion} in the {lane} lane,  going against {opponent_top} in top lane, {opponent_jg} in the jungle, {opponent_mid} in the mid lane, {opponent_bot} in the bot lane, and {opponent_sup} as the support using this list of items {items_list}. If there are repeated items, please substitute it would an item you think would be a better fit."
                 response = get_chatbot_response(user_input, memory_messages)  # Get the chatbot response
                 print(f"Chatbot: {response}")
         except ValueError:
